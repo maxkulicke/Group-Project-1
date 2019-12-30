@@ -1,10 +1,37 @@
 $(document).ready(function () {
 
-  var token = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
+  // the NOAA API is where all of climate data comes from
+  var NOAAtoken = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
+
+  // smartyStreets API is what we'll use to convert a zip code query from user into the
+  // county FIPS code needed for the NOAA queries
+  var smartyStreetsToken = "Tr2dL8zZULmwYqfpMw3W";
+  var smartyStreetsID = "a0c54500-b299-d806-f742-6e5b1e339615";
 
   function getYear() {
     var now = parseInt(moment().format('YYYY'));
     return now;
+  }
+
+  function zipCaller(zip) {
+    var zipQueryUrl
+      = "https://us-zipcode.api.smartystreets.com/lookup?auth-id=" + smartyStreetsID +
+      "&auth-token=" + smartyStreetsToken + "&zipcode=" + zip;
+    $.ajax({
+      url: zipQueryUrl,
+      method: "GET"
+    }).then(function (response) {
+      // FIPSfinder(response);
+      console.log(response);
+      console.log(FIPSfinder(response));
+    });
+  }
+
+  // test call
+  // zipCaller("19143");
+
+  function FIPSfinder(response) {
+    return response[0].zipcodes[0].county_fips;
   }
 
   // 400 ERROR test call
@@ -22,7 +49,7 @@ $(document).ready(function () {
     var locationURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/locationcategories";
     $.ajax({
       url: locationURL,
-      headers: { token: token },
+      headers: { token: NOAAtoken },
       method: "GET"
     }).then(function (response) {
       console.log(response);
@@ -33,7 +60,7 @@ $(document).ready(function () {
     var zipURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/locations?locationcategoryid=CNTY&sortfield=name&sortorder=desc&limit=1000";
     $.ajax({
       url: zipURL,
-      headers: { token: token },
+      headers: { token: NOAAtoken },
       method: "GET"
     }).then(function (response) {
       console.log(response);
@@ -47,7 +74,7 @@ $(document).ready(function () {
     var tavgURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TAVG&locationid=FIPS:06115&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
     $.ajax({
       url: tavgURL,
-      headers: { token: token },
+      headers: { token: NOAAtoken },
       method: "GET",
       success: function (response) {
         ajaxDataMaker(response, array);
@@ -65,7 +92,7 @@ $(document).ready(function () {
     var tmaxURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TMAX&locationid=FIPS:42101&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
     $.ajax({
       url: tmaxURL,
-      headers: { token: token },
+      headers: { token: NOAAtoken },
       method: "GET"
     }).then(function (response) {
       ajaxDataMaker(response, array);
@@ -79,7 +106,7 @@ $(document).ready(function () {
     var prcpURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=PRCP&locationid=FIPS:42101&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
     $.ajax({
       url: prcpURL,
-      headers: { token: token },
+      headers: { token: NOAAtoken },
       method: "GET"
     }).then(function (response) {
       ajaxDataMaker(response, array);
@@ -130,7 +157,8 @@ $(document).ready(function () {
     return arrayAvg;
   }
 
-  backTracker();
+  // test call
+  // backTracker();
 
 })
 
