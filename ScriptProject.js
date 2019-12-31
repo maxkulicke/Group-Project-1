@@ -45,27 +45,27 @@ $(document).ready(function () {
   // });
 
 
-  function noaaLocationList() {
-    var locationURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/locationcategories";
-    $.ajax({
-      url: locationURL,
-      headers: { token: NOAAtoken },
-      method: "GET"
-    }).then(function (response) {
-      console.log(response);
-    });
-  }
+  // function noaaLocationList() {
+  //   var locationURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/locationcategories";
+  //   $.ajax({
+  //     url: locationURL,
+  //     headers: { token: NOAAtoken },
+  //     method: "GET"
+  //   }).then(function (response) {
+  //     console.log(response);
+  //   });
+  // }
 
-  function noaaZIPlist() {
-    var zipURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/locations?locationcategoryid=CNTY&sortfield=name&sortorder=desc&limit=1000";
-    $.ajax({
-      url: zipURL,
-      headers: { token: NOAAtoken },
-      method: "GET"
-    }).then(function (response) {
-      console.log(response);
-    });
-  }
+  // function noaaZIPlist() {
+  //   var zipURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/locations?locationcategoryid=CNTY&sortfield=name&sortorder=desc&limit=1000";
+  //   $.ajax({
+  //     url: zipURL,
+  //     headers: { token: NOAAtoken },
+  //     method: "GET"
+  //   }).then(function (response) {
+  //     console.log(response);
+  //   });
+  // }
 
   // this function gets the yearly temp avg data points for a county code
   // it then crunches the numbers down into a single yearly avg which is
