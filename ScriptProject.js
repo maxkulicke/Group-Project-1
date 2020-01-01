@@ -41,7 +41,8 @@ $(document).ready(function () {
 
   // initiates the weather data process with user input info
   function weatherRunner(zip) {
-    zipCaller(zip);
+    // zipCaller(zip); // avoiding zipCaller for now to not max out API calls!!
+    backTracker("42101");
   }
 
   // queries smartyStreets API with zip code from user, passes
@@ -59,38 +60,40 @@ $(document).ready(function () {
     })
   }
 
-  // SAVE FOR LATER, needed to test error probing process
-  // 400 ERROR test call
-  // var testURL = "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TAVG&locationid=FIPS:06115&startdate=2010-01-01&enddate=2018-01-01";
-  // $.ajax({
-  //   url: testURL,
-  //   headers: { token: token },
-  //   method: "GET"
-  // }).then(function (response) {
-  //   console.log(response);
-  // });
-
   // this function gets the yearly temp avg data points for a county code
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TAVG array
-  function noaaTAVG(FIPS, startYear, endYear, array) {
+  function noaaTAVG(FIPS, startYear, array, count) {
+    if (count >= 50) {
+      return;
+    }
+    var endYear = startYear + 1;
     var tavgURL =
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TAVG&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
     $.ajax({
       url: tavgURL,
       headers: { token: NOAAtoken },
-      method: "GET",
-      success: function (response) {
+      method: "GET"
+    }).then(function (response) {
+      setTimeout(function () {
         ajaxDataMaker(response, array);
-      }
-    });
+        startYear--;
+        count++;
+        noaaTAVG(FIPS, startYear, array, count);
+      }, 1000);
+    })
   }
 
   // this function gets the yearly temp maximum data points for a county code
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TMAX array
-  function noaaTMAX(FIPS, startYear, endYear, array) {
+  // on successful call, calls itself recursively, avoids 429 errors this way
+  function noaaTMAX(FIPS, startYear, array, count) {
+    if (count >= 50) {
+      return;
+    }
+    var endYear = startYear + 1;
     var tmaxURL =
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TMAX&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
@@ -99,14 +102,25 @@ $(document).ready(function () {
       headers: { token: NOAAtoken },
       method: "GET"
     }).then(function (response) {
-      ajaxDataMaker(response, array);
-    });
+      setTimeout(function () {
+        ajaxDataMaker(response, array);
+        startYear--;
+        count++;
+        noaaTMAX(FIPS, startYear, array, count);
+      }, 1000);
+    })
+
   }
 
   // this function gets the yearly precipitation total data points for a county code
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the PRCP array
-  function noaaPRCP(FIPS, startYear, endYear, array) {
+  // on successful call, calls itself recursively, avoids 429 errors this way
+  function noaaPRCP(FIPS, startYear, array, count) {
+    if (count >= 50) {
+      return;
+    }
+    var endYear = startYear + 1;
     var prcpURL =
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=PRCP&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
@@ -115,13 +129,19 @@ $(document).ready(function () {
       headers: { token: NOAAtoken },
       method: "GET"
     }).then(function (response) {
-      ajaxDataMaker(response, array);
-    });
+      setTimeout(function () {
+        ajaxDataMaker(response, array);
+        startYear--;
+        count++;
+        noaaPRCP(FIPS, startYear, array, count);
+      }, 1000);
+    })
   }
 
   // this function is called by the noaa functions
   // it gets all the data points for a year, then averages them
   // then pushes them to the beginning of the respective array
+  // on successful call, calls itself recursively, avoids 429 errors this way
   function ajaxDataMaker(response, array) {
     var yearResults = [];
     // forEach?
@@ -139,21 +159,15 @@ $(document).ready(function () {
     var TMAX = [];
     var PRCP = [];
     var startYear = getYear() - 2;
-    // should take start year from getNow year - 2;
-    // need to go backwards until error.....
-    // should backwards loop be separate function?
-    for (var i = 0; i < 10; i++) {
-      var endYear = startYear + 1;
-      noaaTAVG(FIPS, startYear, endYear, TAVG);
-      noaaTMAX(FIPS, startYear, endYear, TMAX);
-      noaaPRCP(FIPS, startYear, endYear, PRCP);
-      startYear--;
-    }
-    // logs should be deleted at some point
+
+    noaaTAVG(FIPS, startYear, TAVG, 0);
+    noaaTMAX(FIPS, startYear, TMAX, 0);
+    noaaPRCP(FIPS, startYear, PRCP, 0);
+
+    // logs should be deleted eventually
     console.log(TAVG);
     console.log(TMAX);
     console.log(PRCP);
-
   }
 
   // just adds a value to an array, at index[0], and shifts the rest back
