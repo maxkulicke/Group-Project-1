@@ -185,14 +185,9 @@ $(document).ready(function () {
 
   // zillow stuff
 
-  // zillow api key
-  var ZWSID = "X1-ZWz1hjdyrt1k3v_8fetn";
-
-  // need a function that can parse the user input into a string with '+' instead of a space
-
+  // this function creates the url and does the ajax call to the Zillow API
   function zillowGetter() {
     // // proxy because zillow doesn't accept CORS?
-    // var proxy = "https://cors-anywhere.herokuapp.com/";
     var zillowURL = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
       + ZWSID + "&address=4922+Warrington+Ave&citystatezip=Philadelphia%2C+PA+19143";
     $.ajax({
@@ -200,8 +195,19 @@ $(document).ready(function () {
       method: "GET"
     }).then(function (response) {
       var JSONresponse = xmlToJson(response);
+      // comment this log out eventually!
       console.log(JSONresponse);
+      return JSONresponse;
     });
+  }
+
+  // use this function to parse the string inputs from the form that the user fills out
+  // with their address
+  // URLs cannot take spaces, so this will replace every ' ' character within a string
+  // with a '+', which is URL friendly. Ajax calls will fail if this is not done!
+  function spaceToPlusParser(str) {
+    var parsedString = str.replace(/ /g, '+');
+    return parsedString;
   }
 
   // NOTE! the following function is copied verbatim from this website:
