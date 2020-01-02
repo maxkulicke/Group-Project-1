@@ -36,7 +36,7 @@ $(document).ready(function () {
 
   // initiates the zillow process with user input info
   function zillowRunner(zip) {
-    zillowGetter();
+    zillowGetter(zip);
   }
 
   // initiates the weather data process with user input info
@@ -164,7 +164,7 @@ $(document).ready(function () {
     noaaTMAX(FIPS, startYear, TMAX, 0);
     noaaPRCP(FIPS, startYear, PRCP, 0);
 
-    // logs should be deleted eventually
+    // these logs should be deleted eventually!
     console.log(TAVG);
     console.log(TMAX);
     console.log(PRCP);
@@ -186,11 +186,19 @@ $(document).ready(function () {
   // zillow stuff
 
   // this function creates the url and does the ajax call to the Zillow API
-  function zillowGetter() {
-    // // proxy because zillow doesn't accept CORS?
+  function zillowGetter(zip) {
+    // var address = spaceToPlusParser(jQuery call goes here);
+    // var city = spaceToPlusParser(jQuery call goes here);
+    // var stateInitials = spaceToPlusParser(jQuery call goes here);
+    // var zillowUrl = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
+    //  + ZWSID + "&address=" + address + "&citystatezip=" + city + "%2C+" + stateInitials +  "+" + zip;
+
+    // once forms are created and jQuery values are gotten, replace below URL with the 
+    // commented out syntax above (should be correct, double check though)
     var zillowURL = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
       + ZWSID + "&address=4922+Warrington+Ave&citystatezip=Philadelphia%2C+PA+19143";
     $.ajax({
+      // proxy because zillow doesn't accept CORS?
       url: proxy + zillowURL,
       method: "GET"
     }).then(function (response) {
