@@ -1,3 +1,26 @@
+// TODO
+
+// write onClick event for a submit button
+
+// write form value jQuery targets, possibly write a function that creates an address object?
+
+// figure out units of measurement for the 3 differnet statistics (TAVG, TMAX, PRCP) (max can do that)
+
+// graphing api/library function should be written, will probably be called at 
+// the end of backTracker(), which produces those three arrays of data averages.
+// probably use the three arrays as arguments into a master graphing function
+
+// figure out what properties of the zillow object we want to work with, access and 
+// create html appropriately. 
+
+// figure out timing issue w/ ajax calls... (mostly for max)
+// two main issues: 
+// 1) delay in the calls to avoid rate limit errors causes serious lag in the load of 
+// the weather data. currently resolved by just using the error path to repeat the call.
+// not sure if that is a viable long term solution....
+// 2) whatever function those arrays will be sent to will most likely be called before the 
+// ajax recursion is finished....
+
 $(document).ready(function () {
 
   // the NOAA API is where all of weather data comes from
@@ -5,6 +28,7 @@ $(document).ready(function () {
 
   // smartyStreets API is what we'll use to convert a zip code query from user into the
   // county FIPS code needed for the NOAA queries
+  // we only get 250/month for free, so use sparingly when testing!!!
   var smartyStreetsToken = "Tr2dL8zZULmwYqfpMw3W";
   var smartyStreetsID = "a0c54500-b299-d806-f742-6e5b1e339615";
 
@@ -14,15 +38,20 @@ $(document).ready(function () {
   // proxy because zillow doesn't accept CORS?
   var proxy = "https://cors-anywhere.herokuapp.com/";
 
-  // test call
+  // test call, check console for results
   var zip = "19143";
   governor(zip);
 
   // governor is the master function, will be triggered by user onclick event,
   // when they submit address. a function will need to be added to parse address forms
   // just works with zip code for now (currently hardcoded)
+  // eventually, the address will need to be passed into the governor(), i recommend
+  // creating an object from the user form, and then calling governor like:
+  // governor(object)
   function governor(zip) {
+    // this will probably change to: zillowRunner(weatherObject)
     zillowRunner(zip);
+    // this will probably change to: weatherRunner(addressObject.zip)
     weatherRunner(zip);
   }
 
@@ -41,7 +70,11 @@ $(document).ready(function () {
 
   // initiates the weather data process with user input info
   function weatherRunner(zip) {
+    // we only get 250/month for free, so use sparingly when testing!!!
     // zipCaller(zip); // avoiding zipCaller for now to not max out API calls!!
+
+    // use below call to skip the zipCaller() until it is absolutely needed, then
+    // delete backTracker() call, and unComment out the zipCaller() call above
     backTracker("42101");
   }
 
@@ -63,8 +96,11 @@ $(document).ready(function () {
   // this function gets the yearly temp avg data points for a county code
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TAVG array
-  function noaaTAVG(FIPS, startYear, array, count) {
-    if (count >= 50) {
+  function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
+    if (callCount >= 40) {
+      return;
+    }
+    else if (errorCount >= 1000) {
       return;
     }
     var endYear = startYear + 1;
@@ -74,14 +110,17 @@ $(document).ready(function () {
     $.ajax({
       url: tavgURL,
       headers: { token: NOAAtoken },
-      method: "GET"
-    }).then(function (response) {
-      setTimeout(function () {
+      method: "GET",
+      success: function (response) {
         ajaxDataMaker(response, array);
         startYear--;
-        count++;
-        noaaTAVG(FIPS, startYear, array, count);
-      }, 1000);
+        callCount++;
+        noaaTAVG(FIPS, startYear, array, callCount, errorCount);
+      },
+      error: function () {
+        errorCount++;
+        noaaTAVG(FIPS, startYear, array, callCount, errorCount);
+      }
     })
   }
 
@@ -89,8 +128,11 @@ $(document).ready(function () {
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TMAX array
   // on successful call, calls itself recursively, avoids 429 errors this way
-  function noaaTMAX(FIPS, startYear, array, count) {
-    if (count >= 50) {
+  function noaaTMAX(FIPS, startYear, array, callCount) {
+    if (callCount >= 40) {
+      return;
+    }
+    else if (errorCount >= 1000) {
       return;
     }
     var endYear = startYear + 1;
@@ -100,24 +142,29 @@ $(document).ready(function () {
     $.ajax({
       url: tmaxURL,
       headers: { token: NOAAtoken },
-      method: "GET"
-    }).then(function (response) {
-      setTimeout(function () {
+      method: "GET",
+      success: function (response) {
         ajaxDataMaker(response, array);
         startYear--;
-        count++;
-        noaaTMAX(FIPS, startYear, array, count);
-      }, 1000);
+        callCount++;
+        noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+      },
+      error: function () {
+        errorCount++;
+        noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+      }
     })
-
   }
 
   // this function gets the yearly precipitation total data points for a county code
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the PRCP array
   // on successful call, calls itself recursively, avoids 429 errors this way
-  function noaaPRCP(FIPS, startYear, array, count) {
-    if (count >= 50) {
+  function noaaPRCP(FIPS, startYear, array, callCount, errorCount) {
+    if (callCount >= 40) {
+      return;
+    }
+    else if (errorCount >= 1000) {
       return;
     }
     var endYear = startYear + 1;
@@ -127,14 +174,17 @@ $(document).ready(function () {
     $.ajax({
       url: prcpURL,
       headers: { token: NOAAtoken },
-      method: "GET"
-    }).then(function (response) {
-      setTimeout(function () {
+      method: "GET",
+      success: function (response) {
         ajaxDataMaker(response, array);
         startYear--;
-        count++;
-        noaaPRCP(FIPS, startYear, array, count);
-      }, 1000);
+        callCount++;
+        noaaPRCP(FIPS, startYear, array, callCount, errorCount);
+      },
+      error: function () {
+        errorCount++;
+        noaaPRCP(FIPS, startYear, array, callCount, errorCount);
+      }
     })
   }
 
@@ -154,15 +204,16 @@ $(document).ready(function () {
 
   // backTracker takes the FIPS argument and works backwards through time,
   // calling the ajax caller functions to add data for each year.
+  // really important function!
   function backTracker(FIPS) {
     var TAVG = [];
     var TMAX = [];
     var PRCP = [];
     var startYear = getYear() - 2;
 
-    noaaTAVG(FIPS, startYear, TAVG, 0);
-    noaaTMAX(FIPS, startYear, TMAX, 0);
-    noaaPRCP(FIPS, startYear, PRCP, 0);
+    noaaTAVG(FIPS, startYear, TAVG, 0, 0);
+    noaaTMAX(FIPS, startYear, TMAX, 0, 0);
+    noaaPRCP(FIPS, startYear, PRCP, 0, 0);
 
     // these logs should be deleted eventually!
     console.log(TAVG);
