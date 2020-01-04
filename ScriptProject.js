@@ -1,3 +1,4 @@
+
 // TODO
 
 // write onClick event for a submit button
@@ -22,6 +23,16 @@
 // ajax recursion is finished....
 
 $(document).ready(function () {
+
+  $("#submit").on("click", function(event){
+
+    event.preventDefault();
+    var zip = $("#zip").val().trim();
+    //var address = $("#address").val().trim();
+    console.log(zip);
+    alert("hi");
+  });
+
 
   // the NOAA API is where all of weather data comes from
   var NOAAtoken = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
@@ -314,5 +325,5 @@ $(document).ready(function () {
     return obj;
   };
 
-})
+});
 
