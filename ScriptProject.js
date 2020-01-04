@@ -1,3 +1,23 @@
+// write onClick event for a submit button
+
+// write form value jQuery targets, possibly write a function that creates an address object?
+
+// figure out units of measurement for the 3 differnet statistics (TAVG, TMAX, PRCP) (max can do that)
+
+// graphing api/library function should be written, will probably be called at 
+// the end of backTracker(), which produces those three arrays of data averages.
+// probably use the three arrays as arguments into a master graphing function
+
+// figure out what properties of the zillow object we want to work with, access and 
+// create html appropriately. 
+
+// figure out timing issue w/ ajax calls... (mostly for max)
+// two main issues: 
+// 1) delay in the calls to avoid rate limit errors causes serious lag in the load of 
+// the weather data. currently resolved by just using the error path to repeat the call.
+// not sure if that is a viable long term solution....
+// 2) whatever function those arrays will be sent to will most likely be called before the 
+// ajax recursion is finished.... comment some love
 $(document).ready(function() {
 
   $("#submit").on("click", function(event){
