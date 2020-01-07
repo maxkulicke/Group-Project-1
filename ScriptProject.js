@@ -1,6 +1,7 @@
 
 // TODO
 
+
 // write onClick event for a submit button
 
 // write form value jQuery targets, possibly write a function that creates an address object?
@@ -20,9 +21,13 @@
 // the weather data. currently resolved by just using the error path to repeat the call.
 // not sure if that is a viable long term solution....
 // 2) whatever function those arrays will be sent to will most likely be called before the 
+
 // ajax recursion is finished....
 
 $(document).ready(function () {
+
+// ajax recursion is finished.... comment some love
+$(document).ready(function() {
 
   $("#submit").on("click", function(event){
 
