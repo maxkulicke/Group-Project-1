@@ -4,7 +4,7 @@
 
 // figure out units of measurement for the 3 differnet statistics (TAVG, TMAX, PRCP) (max can do that)
 
-// graphing api/library function should be written, will probably be called at 
+// graphing api/library function should be written, will probably be called at -- Nick
 // the end of backTracker(), which produces those three arrays of data averages.
 // probably use the three arrays as arguments into a master graphing function
 
@@ -27,6 +27,7 @@ $(document).ready(function() {
     //var address = $("#address").val().trim();
     console.log(zip);
     alert("hi");
+    
   });
 
   // the NOAA API is where all of weather data comes from
