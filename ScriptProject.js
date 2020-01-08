@@ -24,7 +24,7 @@
 
 // ajax recursion is finished....
 
-$(document).ready(function () {
+//$(document).ready(function () {
 
 // ajax recursion is finished.... comment some love
 $(document).ready(function() {
@@ -56,7 +56,7 @@ $(document).ready(function() {
 
   // test call, check console for results
   var zip = "19143";
-  governor(zip);
+  //governor(zip);
 
   // governor is the master function, will be triggered by user onclick event,
   // when they submit address. a function will need to be added to parse address forms
@@ -64,16 +64,20 @@ $(document).ready(function() {
   // eventually, the address will need to be passed into the governor(), i recommend
   // creating an object from the user form, and then calling governor like:
   // governor(object)
-  function governor(zip) {
-    // this will probably change to: zillowRunner(weatherObject)
-    zillowRunner(zip);
-    // this will probably change to: weatherRunner(addressObject.zip)
-    weatherRunner(zip);
-  }
+
+  // function governor(zip) {
+  //   // this will probably change to: zillowRunner(weatherObject)
+  //   zillowRunner(zip);
+  //   // this will probably change to: weatherRunner(addressObject.zip)
+  //   weatherRunner(zip);
+  // }
 
   // returns the 4 character string for the current year.
   // this return is used by backTracker() to have a year
   // to work backwards from
+
+  backTracker("42101");
+  graphData();
   function getYear() {
     var now = parseInt(moment().format('YYYY'));
     return now;
@@ -128,6 +132,7 @@ $(document).ready(function() {
       headers: { token: NOAAtoken },
       method: "GET",
       success: function (response) {
+        console.log(response);
         ajaxDataMaker(response, array);
         startYear--;
         callCount++;
@@ -164,10 +169,12 @@ $(document).ready(function() {
         startYear--;
         callCount++;
         noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+       
       },
       error: function () {
         errorCount++;
         noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+        console.log(errorCount);
       }
     })
   }
@@ -227,15 +234,36 @@ $(document).ready(function() {
     var PRCP = [];
     var startYear = getYear() - 2;
 
-    noaaTAVG(FIPS, startYear, TAVG, 0, 0);
-    noaaTMAX(FIPS, startYear, TMAX, 0, 0);
-    noaaPRCP(FIPS, startYear, PRCP, 0, 0);
+    //noaaTAVG(FIPS, startYear, TAVG, 0, 0);
+    //noaaTMAX(FIPS, startYear, TMAX, 0, 0);
+    //noaaPRCP(FIPS, startYear, PRCP, 0, 0);
 
     // these logs should be deleted eventually!
     console.log(TAVG);
     console.log(TMAX);
     console.log(PRCP);
+    graphData(TAVG);
   }
+
+  function graphData(TAVG) {
+
+      console.log(TAVG);
+
+      new Chartist.Line('.ct-chart', {
+        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        series: [
+          [12, 9, 7, 8, 5],
+          [2, 1, 3.5, 7, 3],
+          [1, 3, 4, 5, 6]
+        ]
+      }, {
+        fullWidth: true,
+        chartPadding: {
+          right: 40
+        }
+      });
+
+  };
 
   // just adds a value to an array, at index[0], and shifts the rest back
   function arrayMaker(value, array) {
@@ -331,4 +359,3 @@ $(document).ready(function() {
   };
 
 });
-
