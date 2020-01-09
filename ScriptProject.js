@@ -77,7 +77,7 @@ $(document).ready(function() {
   // to work backwards from
 
   backTracker("42101");
-  graphData();
+  //graphData();
   function getYear() {
     var now = parseInt(moment().format('YYYY'));
     return now;
@@ -117,7 +117,10 @@ $(document).ready(function() {
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TAVG array
   function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount >= 40) {
+    if (callCount === 40){
+      graphTempAVG(array);
+    }
+    if (callCount > 40) {
       return;
     }
     else if (errorCount >= 1000) {
@@ -150,7 +153,10 @@ $(document).ready(function() {
   // pushed into the beginning of the TMAX array
   // on successful call, calls itself recursively, avoids 429 errors this way
   function noaaTMAX(FIPS, startYear, array, callCount) {
-    if (callCount >= 40) {
+    if (callCount === 40){
+      graphData(array);
+    }
+    if (callCount > 40) {
       return;
     }
     else if (errorCount >= 1000) {
@@ -184,6 +190,9 @@ $(document).ready(function() {
   // pushed into the beginning of the PRCP array
   // on successful call, calls itself recursively, avoids 429 errors this way
   function noaaPRCP(FIPS, startYear, array, callCount, errorCount) {
+    if (callCount === 40){
+      graphPRCP(array));
+    }
     if (callCount >= 40) {
       return;
     }
@@ -234,7 +243,7 @@ $(document).ready(function() {
     var PRCP = [];
     var startYear = getYear() - 2;
 
-    //noaaTAVG(FIPS, startYear, TAVG, 0, 0);
+    noaaTAVG(FIPS, startYear, TAVG, 0, 0);
     //noaaTMAX(FIPS, startYear, TMAX, 0, 0);
     //noaaPRCP(FIPS, startYear, PRCP, 0, 0);
 
@@ -242,27 +251,175 @@ $(document).ready(function() {
     console.log(TAVG);
     console.log(TMAX);
     console.log(PRCP);
-    graphData(TAVG);
-  }
+    //graphData(TAVG);
+  };
+  
+  function graphTempAVG(array) {
+    
+    var year = moment().format('YYYY');
+    
+    new Chartist.Line('.TAVG', {
+      series: [[
+        {x: year, y: (array[40] * 9/5) + 32},
+        {x: year-1, y: (array[39] * 9/5) + 32},
+        {x: year-2, y: (array[38] * 9/5) + 32},
+        {x: year-3, y: (array[37] * 9/5) + 32},
+        {x: year-4, y: (array[36] * 9/5) + 32},
+        {x: year-5, y: (array[35] * 9/5) + 32},
+        {x: year-6, y: (array[34] * 9/5) + 32},
+        {x: year-7, y: (array[33] * 9/5) + 32},
+        {x: year-8, y: (array[32] * 9/5) + 32},
+        {x: year-9, y: (array[31] * 9/5) + 32},
+        {x: year-10, y: (array[30] * 9/5) + 32},
+        {x: year-11, y: (array[29] * 9/5) + 32},
+        {x: year-12, y: (array[28] * 9/5) + 32},
+        {x: year-13, y: (array[27] * 9/5) + 32},
+        {x: year-14, y: (array[26] * 9/5) + 32},
+        {x: year-15, y: (array[25] * 9/5) + 32},
+        {x: year-16, y: (array[24] * 9/5) + 32},
+        {x: year-17, y: (array[23] * 9/5) + 32},
+        {x: year-18, y: (array[21] * 9/5) + 32},
+        {x: year-19, y: (array[20] * 9/5) + 32},
+        {x: year-20, y: (array[19] * 9/5) + 32},
+        {x: year-21, y: (array[18] * 9/5) + 32},
+        {x: year-22, y: (array[17] * 9/5) + 32},
+        {x: year-23, y: (array[16] * 9/5) + 32},
+        {x: year-24, y: (array[15] * 9/5) + 32},
+        {x: year-25, y: (array[14] * 9/5) + 32},
+        {x: year-26, y: (array[13] * 9/5) + 32},
+        {x: year-27, y: (array[12] * 9/5) + 32},
+        {x: year-28, y: (array[11] * 9/5) + 32},
+        {x: year-29, y: (array[10] * 9/5) + 32},
+        {x: year-30, y: (array[9] * 9/5) + 32},
+        {x: year-31, y: (array[8] * 9/5) + 32},
+        {x: year-32, y: (array[7] * 9/5) + 32},
+        {x: year-33, y: (array[6] * 9/5) + 32},
+        {x: year-34, y: (array[5] * 9/5) + 32},
+        {x: year-35, y: (array[4] * 9/5) + 32},
+        {x: year-36, y: (array[3] * 9/5) + 32},
+        {x: year-37, y: (array[2] * 9/5) + 32},
+        {x: year-38, y: (array[1] * 9/5) + 32},
+      ]]
+    }, {
+        axisX: {
+          type: Chartist.AutoScaleAxis,
+        },
+    
+    },{
+      
+  });
+  };
 
-  function graphData(TAVG) {
+  function graphTempMAX(array) {
+    
+    var year = moment().format('YYYY');
+    
+    new Chartist.Line('.TMAX', {
+      series: [[
+        {x: year, y: (array[40] * 9/5) + 32},
+        {x: year-1, y: (array[39] * 9/5) + 32},
+        {x: year-2, y: (array[38] * 9/5) + 32},
+        {x: year-3, y: (array[37] * 9/5) + 32},
+        {x: year-4, y: (array[36] * 9/5) + 32},
+        {x: year-5, y: (array[35] * 9/5) + 32},
+        {x: year-6, y: (array[34] * 9/5) + 32},
+        {x: year-7, y: (array[33] * 9/5) + 32},
+        {x: year-8, y: (array[32] * 9/5) + 32},
+        {x: year-9, y: (array[31] * 9/5) + 32},
+        {x: year-10, y: (array[30] * 9/5) + 32},
+        {x: year-11, y: (array[29] * 9/5) + 32},
+        {x: year-12, y: (array[28] * 9/5) + 32},
+        {x: year-13, y: (array[27] * 9/5) + 32},
+        {x: year-14, y: (array[26] * 9/5) + 32},
+        {x: year-15, y: (array[25] * 9/5) + 32},
+        {x: year-16, y: (array[24] * 9/5) + 32},
+        {x: year-17, y: (array[23] * 9/5) + 32},
+        {x: year-18, y: (array[21] * 9/5) + 32},
+        {x: year-19, y: (array[20] * 9/5) + 32},
+        {x: year-20, y: (array[19] * 9/5) + 32},
+        {x: year-21, y: (array[18] * 9/5) + 32},
+        {x: year-22, y: (array[17] * 9/5) + 32},
+        {x: year-23, y: (array[16] * 9/5) + 32},
+        {x: year-24, y: (array[15] * 9/5) + 32},
+        {x: year-25, y: (array[14] * 9/5) + 32},
+        {x: year-26, y: (array[13] * 9/5) + 32},
+        {x: year-27, y: (array[12] * 9/5) + 32},
+        {x: year-28, y: (array[11] * 9/5) + 32},
+        {x: year-29, y: (array[10] * 9/5) + 32},
+        {x: year-30, y: (array[9] * 9/5) + 32},
+        {x: year-31, y: (array[8] * 9/5) + 32},
+        {x: year-32, y: (array[7] * 9/5) + 32},
+        {x: year-33, y: (array[6] * 9/5) + 32},
+        {x: year-34, y: (array[5] * 9/5) + 32},
+        {x: year-35, y: (array[4] * 9/5) + 32},
+        {x: year-36, y: (array[3] * 9/5) + 32},
+        {x: year-37, y: (array[2] * 9/5) + 32},
+        {x: year-38, y: (array[1] * 9/5) + 32},
+      ]]
+    }, {
+        axisX: {
+          type: Chartist.AutoScaleAxis,
+        },
+    
+    },{
+      
+  });
+  };
 
-      console.log(TAVG);
-
-      new Chartist.Line('.ct-chart', {
-        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
-        series: [
-          [12, 9, 7, 8, 5],
-          [2, 1, 3.5, 7, 3],
-          [1, 3, 4, 5, 6]
-        ]
-      }, {
-        fullWidth: true,
-        chartPadding: {
-          right: 40
-        }
-      });
-
+  function graphPRCP(array) {
+    
+    var year = moment().format('YYYY');
+    
+    new Chartist.Line('.TMAX', {
+      series: [[
+        {x: year, y: array[40]},
+        {x: year-1, y: array[39]},
+        {x: year-2, y: array[38]},
+        {x: year-3, y: array[37]},
+        {x: year-4, y: array[36]},
+        {x: year-5, y: array[35]},
+        {x: year-6, y: array[34]},
+        {x: year-7, y: array[33]},
+        {x: year-8, y: array[32]},
+        {x: year-9, y: array[31]},
+        {x: year-10, y: array[30]},
+        {x: year-11, y: array[29]},
+        {x: year-12, y: array[28]},
+        {x: year-13, y: array[27]},
+        {x: year-14, y: array[26]},
+        {x: year-15, y: array[25]},
+        {x: year-16, y: array[24]},
+        {x: year-17, y: array[23]},
+        {x: year-18, y: array[21]},
+        {x: year-19, y: array[20]},
+        {x: year-20, y: array[19]},
+        {x: year-21, y: array[18]},
+        {x: year-22, y: array[17]},
+        {x: year-23, y: array[16]},
+        {x: year-24, y: array[15]},
+        {x: year-25, y: array[14]},
+        {x: year-26, y: array[13]},
+        {x: year-27, y: array[12]},
+        {x: year-28, y: array[11]},
+        {x: year-29, y: array[10]},
+        {x: year-30, y: array[9]},
+        {x: year-31, y: array[8]},
+        {x: year-32, y: array[7]},
+        {x: year-33, y: array[6]},
+        {x: year-34, y: array[5]},
+        {x: year-35, y: array[4]},
+        {x: year-36, y: array[3]},
+        {x: year-37, y: array[2]},
+        {x: year-38, y: array[1]},
+      ]]
+    }, {
+        axisX: {
+          type: Chartist.AutoScaleAxis,
+        },
+    
+    },{
+      
+  });
   };
 
   // just adds a value to an array, at index[0], and shifts the rest back
