@@ -24,7 +24,7 @@
 
 // ajax recursion is finished....
 
-$(document).ready(function () {
+//$(document).ready(function () {
 
 // ajax recursion is finished.... comment some love
 $(document).ready(function() {
@@ -56,7 +56,7 @@ $(document).ready(function() {
 
   // test call, check console for results
   var zip = "19143";
-  governor(zip);
+  //governor(zip);
 
   // governor is the master function, will be triggered by user onclick event,
   // when they submit address. a function will need to be added to parse address forms
@@ -64,16 +64,20 @@ $(document).ready(function() {
   // eventually, the address will need to be passed into the governor(), i recommend
   // creating an object from the user form, and then calling governor like:
   // governor(object)
-  function governor(zip) {
-    // this will probably change to: zillowRunner(weatherObject)
-    zillowRunner(zip);
-    // this will probably change to: weatherRunner(addressObject.zip)
-    weatherRunner(zip);
-  }
+
+  // function governor(zip) {
+  //   // this will probably change to: zillowRunner(weatherObject)
+  //   zillowRunner(zip);
+  //   // this will probably change to: weatherRunner(addressObject.zip)
+  //   weatherRunner(zip);
+  // }
 
   // returns the 4 character string for the current year.
   // this return is used by backTracker() to have a year
   // to work backwards from
+
+  backTracker("42101");
+  //graphData();
   function getYear() {
     var now = parseInt(moment().format('YYYY'));
     return now;
@@ -113,7 +117,10 @@ $(document).ready(function() {
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TAVG array
   function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount >= 40) {
+    if (callCount === 40){
+      graphTempAVG(array);
+    }
+    if (callCount > 40) {
       return;
     }
     else if (errorCount >= 1000) {
@@ -144,8 +151,11 @@ $(document).ready(function() {
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TMAX array
   // on successful call, calls itself recursively, avoids 429 errors this way
-  function noaaTMAX(FIPS, startYear, array, callCount) {
-    if (callCount >= 40) {
+  function noaaTMAX(FIPS, startYear, array, callCount, errorCount) {
+    if (callCount === 40){
+      graphTempMAX(array);
+    }
+    if (callCount > 40) {
       return;
     }
     else if (errorCount >= 1000) {
@@ -164,10 +174,12 @@ $(document).ready(function() {
         startYear--;
         callCount++;
         noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+       
       },
       error: function () {
         errorCount++;
         noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+        
       }
     })
   }
@@ -177,6 +189,9 @@ $(document).ready(function() {
   // pushed into the beginning of the PRCP array
   // on successful call, calls itself recursively, avoids 429 errors this way
   function noaaPRCP(FIPS, startYear, array, callCount, errorCount) {
+    if (callCount === 40){
+      graphPRCP(array);
+    }
     if (callCount >= 40) {
       return;
     }
@@ -227,19 +242,82 @@ $(document).ready(function() {
     var PRCP = [];
     var startYear = getYear() - 2;
 
-    noaaTAVG(FIPS, startYear, TAVG, 0, 0);
+    //noaaTAVG(FIPS, startYear, TAVG, 0, 0);
     noaaTMAX(FIPS, startYear, TMAX, 0, 0);
-    noaaPRCP(FIPS, startYear, PRCP, 0, 0);
+    //noaaPRCP(FIPS, startYear, PRCP, 0, 0);
 
     // these logs should be deleted eventually!
-    console.log(TAVG);
-    console.log(TMAX);
-    console.log(PRCP);
-  }
+    //console.log(TAVG);
+    // console.log(TMAX);
+    // console.log(PRCP);
+    //graphData(TAVG);
+  };
+  
+  function graphTempAVG(array) {
+    
+    var year = moment().format('YYYY');
+    var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
+    
+    // var formattedArray2 = [];
+    // for (var i = 0; i<array.length; i++){
+      
+    //   formattedArray2.push({x: year-i, y: array[i] * 9/5 + 32});
+      
+    // }
+
+    //.map, .filter, .foreach
+
+    new Chartist.Line('.TAVG', {
+      series: [formattedArray]
+      }, {
+          axisX: {
+            type: Chartist.AutoScaleAxis,
+          },
+      
+      },{
+
+    })
+    
+  };
+
+  function graphTempMAX(array) {
+
+    var year = moment().format('YYYY');
+    var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
+    
+    new Chartist.Line('.TMAX', {
+      series: [formattedArray]
+    }, {
+        axisX: {
+          type: Chartist.AutoScaleAxis,
+        },
+    
+    },{
+      
+  });
+  };
+
+  function graphPRCP(array) {
+    
+    var year = moment().format('YYYY');
+    var year = moment().format('YYYY');
+    var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
+    
+    new Chartist.Line('.PRCP', {
+      series: [formattedArray]
+    }, {
+        axisX: {
+          type: Chartist.AutoScaleAxis,
+        },
+    
+    },{
+      
+  });
+  };
 
   // just adds a value to an array, at index[0], and shifts the rest back
   function arrayMaker(value, array) {
-    array.unshift(value);
+    array.push(value);
   }
 
   // averages all the values in the array using reduce();
@@ -331,4 +409,3 @@ $(document).ready(function() {
   };
 
 });
-
