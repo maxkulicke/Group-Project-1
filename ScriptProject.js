@@ -304,7 +304,6 @@ $(document).ready(function() {
   function graphPRCP(array) {
     
     var year = moment().format('YYYY');
-    var year = moment().format('YYYY');
     var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
     
     new Chartist.Line('.PRCP', {
@@ -336,7 +335,7 @@ $(document).ready(function() {
 
   // this function creates the url and does the ajax call to the Zillow API
   function zillowGetter(address, city, stateInitials, zip) {
-    
+   
     var address = spaceToPlusParser(address);
     var city = spaceToPlusParser(city);
     var stateInitials = spaceToPlusParser(stateInitials);
@@ -356,6 +355,8 @@ $(document).ready(function() {
     }).then(function (response) {
       var JSONresponse = xmlToJson(response);
       // comment this log out eventually!
+      //var estimate = response.result.array[0].localRealEstate.zindexValue;
+      
       console.log(JSONresponse);
       return JSONresponse;
     });
