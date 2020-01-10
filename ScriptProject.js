@@ -358,6 +358,7 @@ $(document).ready(function() {
       //var estimate = response.result.array[0].localRealEstate.zindexValue;
       
       console.log(JSONresponse);
+      zillowDisplayer(JSONresponse);
       return JSONresponse;
 
     });
