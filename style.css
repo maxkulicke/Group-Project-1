@@ -10,10 +10,14 @@
 
 }
 
-.input {
+.control{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.input{
+    width: 350px;
+    margin: 2px;
 
-    margin-bottom: 5px;
-    /* rounded corners */
-    border-radius: 10px;
-    
 }
