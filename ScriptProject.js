@@ -32,10 +32,14 @@ $(document).ready(function() {
   $("#submit").on("click", function(event){
 
     event.preventDefault();
-    var zip = $("#zip").val().trim();
-    //var address = $("#address").val().trim();
-    console.log(zip);
-    alert("hi");
+    var address = $("#address").val();
+    var city = $("#city").val();
+    var stateIntials = $("#state").val();
+    var zip = $("#zip").val();
+
+    //console.log(address);
+    zillowGetter(address, city, stateIntials, zip);
+
   });
 
 
@@ -76,7 +80,9 @@ $(document).ready(function() {
   // this return is used by backTracker() to have a year
   // to work backwards from
 
-  backTracker("42101");
+
+  //backTracker("42101");
+
   //graphData();
   function getYear() {
     var now = parseInt(moment().format('YYYY'));
@@ -236,22 +242,24 @@ $(document).ready(function() {
   // backTracker takes the FIPS argument and works backwards through time,
   // calling the ajax caller functions to add data for each year.
   // really important function!
-  function backTracker(FIPS) {
-    var TAVG = [];
-    var TMAX = [];
-    var PRCP = [];
-    var startYear = getYear() - 2;
 
-    //noaaTAVG(FIPS, startYear, TAVG, 0, 0);
-    noaaTMAX(FIPS, startYear, TMAX, 0, 0);
-    //noaaPRCP(FIPS, startYear, PRCP, 0, 0);
+  // //function backTracker(FIPS) {
+  //   var TAVG = [];
+  //   var TMAX = [];
+  //   var PRCP = [];
+  //   var startYear = getYear() - 2;
 
-    // these logs should be deleted eventually!
-    //console.log(TAVG);
-    // console.log(TMAX);
-    // console.log(PRCP);
-    //graphData(TAVG);
-  };
+  //   //noaaTAVG(FIPS, startYear, TAVG, 0, 0);
+  //   noaaTMAX(FIPS, startYear, TMAX, 0, 0);
+  //   //noaaPRCP(FIPS, startYear, PRCP, 0, 0);
+
+  //   // these logs should be deleted eventually!
+  //   //console.log(TAVG);
+  //   // console.log(TMAX);
+  //   // console.log(PRCP);
+  //   //graphData(TAVG);
+  // });
+
   
   function graphTempAVG(array) {
     
@@ -331,17 +339,20 @@ $(document).ready(function() {
   // zillow stuff
 
   // this function creates the url and does the ajax call to the Zillow API
-  function zillowGetter(zip) {
-    // var address = spaceToPlusParser(jQuery call goes here);
-    // var city = spaceToPlusParser(jQuery call goes here);
-    // var stateInitials = spaceToPlusParser(jQuery call goes here);
-    // var zillowUrl = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
-    //  + ZWSID + "&address=" + address + "&citystatezip=" + city + "%2C+" + stateInitials +  "+" + zip;
+  function zillowGetter(address, city, stateInitials, zip) {
+    
+    var address = spaceToPlusParser(address);
+    var city = spaceToPlusParser(city);
+    var stateInitials = spaceToPlusParser(stateInitials);
+    var zip = spaceToPlusParser(zip);
+    
+    var zillowURL = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
+     + ZWSID + "&address=" + address + "&citystatezip=" + city + "%2C+" + stateInitials +  "+" + zip;
 
     // once forms are created and jQuery values are gotten, replace below URL with the 
     // commented out syntax above (should be correct, double check though)
-    var zillowURL = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
-      + ZWSID + "&address=4922+Warrington+Ave&citystatezip=Philadelphia%2C+PA+19143";
+    // var zillowURL = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
+    //   + ZWSID + "&address=4922+Warrington+Ave&citystatezip=Philadelphia%2C+PA+19143";
     $.ajax({
       // proxy because zillow doesn't accept CORS?
       url: proxy + zillowURL,
@@ -352,7 +363,7 @@ $(document).ready(function() {
       console.log(JSONresponse);
       return JSONresponse;
     });
-  }
+  };
 
   // use this function to parse the string inputs from the form that the user fills out
   // with their address
