@@ -9,3 +9,11 @@
     padding-right: 5px;
 
 }
+
+.input {
+
+    margin-bottom: 5px;
+    /* rounded corners */
+    border-radius: 10px;
+    
+}

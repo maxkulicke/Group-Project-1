@@ -359,12 +359,40 @@ $(document).ready(function() {
     }).then(function (response) {
       var JSONresponse = xmlToJson(response);
       // comment this log out eventually!
-      //var estimate = response.result.array[0].localRealEstate.zindexValue;
-      
-      console.log(JSONresponse);
-      return JSONresponse;
+      // var zestimate = response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"];
+
+      // var lowRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"];
+
+      // var highRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"];
+
+      // var neighborhoodAVG = response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]
+
+      // $("#zestimate").append(zestimate);
+      // $("#lowRange").append(lowRange);
+      // $("#highRange").append(highRange);
+      // $("neighborhood").append(neighborhoodAVG);
+      // console.log(JSONresponse);
+      // return JSONresponse;
+      zillowDisplayer(JSONresponse);
     });
   };
+
+  function zillowDisplayer(response) {
+    var zestimate = response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"];
+
+    var lowRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"];
+
+    var highRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"];
+
+    var neighborhoodAVG = response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]
+
+    $("#zestimate").append(zestimate);
+    $("#lowRange").append(lowRange);
+    $("#highRange").append(highRange);
+    $("neighborhood").append(neighborhoodAVG);
+    // console.log(JSONresponse);
+    // return JSONresponse;
+  }
 
   // use this function to parse the string inputs from the form that the user fills out
   // with their address
