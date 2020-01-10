@@ -9,6 +9,7 @@
     padding-right: 5px;
 
 }
+
 .control{
     display: flex;
     flex-direction: column;
@@ -18,4 +19,5 @@
 .input{
     width: 350px;
     margin: 2px;
+
 }

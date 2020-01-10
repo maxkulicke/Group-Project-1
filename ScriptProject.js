@@ -1,16 +1,9 @@
 
 // TODO
 
-
-// write onClick event for a submit button
-
 // write form value jQuery targets, possibly write a function that creates an address object?
 
 // figure out units of measurement for the 3 differnet statistics (TAVG, TMAX, PRCP) (max can do that)
-
-// graphing api/library function should be written, will probably be called at 
-// the end of backTracker(), which produces those three arrays of data averages.
-// probably use the three arrays as arguments into a master graphing function
 
 // figure out what properties of the zillow object we want to work with, access and 
 // create html appropriately. 
@@ -21,27 +14,20 @@
 // the weather data. currently resolved by just using the error path to repeat the call.
 // not sure if that is a viable long term solution....
 // 2) whatever function those arrays will be sent to will most likely be called before the 
-
 // ajax recursion is finished....
 
-//$(document).ready(function () {
-
-// ajax recursion is finished.... comment some love
 $(document).ready(function() {
 
   $("#submit").on("click", function(event){
-
     event.preventDefault();
     var address = $("#address").val();
     var city = $("#city").val();
     var stateIntials = $("#state").val();
     var zip = $("#zip").val();
-
     //console.log(address);
     zillowGetter(address, city, stateIntials, zip);
-
+    weatherRunner(zip);
     document.getElementById("main-form").style.display="none";
-
 
   });
 
@@ -126,13 +112,15 @@ $(document).ready(function() {
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TAVG array
   function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount === 40){
+    // if (callCount === 40){
+    //   graphTempAVG(array);
+    // }
+    if (callCount >= 40) {
       graphTempAVG(array);
-    }
-    if (callCount > 40) {
       return;
     }
     else if (errorCount >= 1000) {
+      graphTempAVG(array);
       return;
     }
     var endYear = startYear + 1;
@@ -161,13 +149,15 @@ $(document).ready(function() {
   // pushed into the beginning of the TMAX array
   // on successful call, calls itself recursively, avoids 429 errors this way
   function noaaTMAX(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount === 40){
+    // if (callCount === 40){
+    //   graphTempMAX(array);
+    // }
+    if (callCount >= 40) {
       graphTempMAX(array);
-    }
-    if (callCount > 40) {
       return;
     }
     else if (errorCount >= 1000) {
+      graphTempMAX(array);
       return;
     }
     var endYear = startYear + 1;
@@ -198,13 +188,15 @@ $(document).ready(function() {
   // pushed into the beginning of the PRCP array
   // on successful call, calls itself recursively, avoids 429 errors this way
   function noaaPRCP(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount === 40){
-      graphPRCP(array);
-    }
+    // if (callCount === 40){
+    //   graphPRCP(array);
+    // }
     if (callCount >= 40) {
+      graphPRCP(array);
       return;
     }
     else if (errorCount >= 1000) {
+      graphPRCP(array);
       return;
     }
     var endYear = startYear + 1;
@@ -246,36 +238,32 @@ $(document).ready(function() {
   // calling the ajax caller functions to add data for each year.
   // really important function!
 
-  // //function backTracker(FIPS) {
-  //   var TAVG = [];
-  //   var TMAX = [];
-  //   var PRCP = [];
-  //   var startYear = getYear() - 2;
+  function backTracker(FIPS) {
+    var TAVG = [];
+    var TMAX = [];
+    var PRCP = [];
+    var startYear = getYear() - 2;
 
-  //   //noaaTAVG(FIPS, startYear, TAVG, 0, 0);
-  //   noaaTMAX(FIPS, startYear, TMAX, 0, 0);
-  //   //noaaPRCP(FIPS, startYear, PRCP, 0, 0);
+    noaaTAVG(FIPS, startYear, TAVG, 0, 0);
+    noaaTMAX(FIPS, startYear, TMAX, 0, 0);
+    noaaPRCP(FIPS, startYear, PRCP, 0, 0);
 
-  //   // these logs should be deleted eventually!
-  //   //console.log(TAVG);
-  //   // console.log(TMAX);
-  //   // console.log(PRCP);
-  //   //graphData(TAVG);
-  // });
+    // these logs should be deleted eventually!
+    //console.log(TAVG);
+    // console.log(TMAX);
+    // console.log(PRCP);
+    //graphData(TAVG);
+  }
 
   
   function graphTempAVG(array) {
-    
     var year = moment().format('YYYY');
     var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
     
     // var formattedArray2 = [];
     // for (var i = 0; i<array.length; i++){
-      
     //   formattedArray2.push({x: year-i, y: array[i] * 9/5 + 32});
-      
     // }
-
     //.map, .filter, .foreach
 
     new Chartist.Line('.TAVG', {
@@ -284,44 +272,33 @@ $(document).ready(function() {
           axisX: {
             type: Chartist.AutoScaleAxis,
           },
-      
       },{
-
     })
-    
   };
 
   function graphTempMAX(array) {
-
     var year = moment().format('YYYY');
     var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
-    
     new Chartist.Line('.TMAX', {
       series: [formattedArray]
     }, {
         axisX: {
           type: Chartist.AutoScaleAxis,
         },
-    
     },{
-      
   });
   };
 
   function graphPRCP(array) {
-    
     var year = moment().format('YYYY');
     var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
-    
     new Chartist.Line('.PRCP', {
       series: [formattedArray]
     }, {
         axisX: {
           type: Chartist.AutoScaleAxis,
         },
-    
     },{
-      
   });
   };
 
@@ -362,12 +339,46 @@ $(document).ready(function() {
     }).then(function (response) {
       var JSONresponse = xmlToJson(response);
       // comment this log out eventually!
+
+      // var zestimate = response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"];
+
+      // var lowRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"];
+
+      // var highRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"];
+
+      // var neighborhoodAVG = response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]
+
+      // $("#zestimate").append(zestimate);
+      // $("#lowRange").append(lowRange);
+      // $("#highRange").append(highRange);
+      // $("neighborhood").append(neighborhoodAVG);
+      // console.log(JSONresponse);
+      // return JSONresponse;
+
       //var estimate = response.result.array[0].localRealEstate.zindexValue;
       
       console.log(JSONresponse);
       return JSONresponse;
+
     });
   };
+
+  function zillowDisplayer(response) {
+    var zestimate = response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"];
+
+    var lowRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"];
+
+    var highRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"];
+
+    var neighborhoodAVG = response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]
+
+    $("#zestimate").append(zestimate);
+    $("#lowRange").append(lowRange);
+    $("#highRange").append(highRange);
+    $("neighborhood").append(neighborhoodAVG);
+    // console.log(JSONresponse);
+    // return JSONresponse;
+  }
 
   // use this function to parse the string inputs from the form that the user fills out
   // with their address
