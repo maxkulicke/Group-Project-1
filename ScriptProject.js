@@ -16,21 +16,7 @@
 // 2) whatever function those arrays will be sent to will most likely be called before the 
 // ajax recursion is finished....
 
-$(document).ready(function() {
-
-  $("#submit").on("click", function(event){
-    event.preventDefault();
-    var address = $("#address").val();
-    var city = $("#city").val();
-    var stateIntials = $("#state").val();
-    var zip = $("#zip").val();
-    //console.log(address);
-    zillowGetter(address, city, stateIntials, zip);
-    weatherRunner(zip);
-    document.getElementById("main-form").style.display="none";
-
-  });
-
+$(document).ready(function () {
 
   // the NOAA API is where all of weather data comes from
   var NOAAtoken = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
@@ -47,40 +33,25 @@ $(document).ready(function() {
   // proxy because zillow doesn't accept CORS?
   var proxy = "https://cors-anywhere.herokuapp.com/";
 
-  // test call, check console for results
-  var zip = "19143";
-  //governor(zip);
 
-  // governor is the master function, will be triggered by user onclick event,
-  // when they submit address. a function will need to be added to parse address forms
-  // just works with zip code for now (currently hardcoded)
-  // eventually, the address will need to be passed into the governor(), i recommend
-  // creating an object from the user form, and then calling governor like:
-  // governor(object)
-
-  // function governor(zip) {
-  //   // this will probably change to: zillowRunner(weatherObject)
-  //   zillowRunner(zip);
-  //   // this will probably change to: weatherRunner(addressObject.zip)
-  //   weatherRunner(zip);
-  // }
+  $("#submit").on("click", function (event) {
+    event.preventDefault();
+    var address = $("#address").val();
+    var city = $("#city").val();
+    var stateIntials = $("#state").val();
+    var zip = $("#zip").val();
+    //console.log(address);
+    zillowGetter(address, city, stateIntials, zip);
+    weatherRunner(zip);
+    document.getElementById("main-form").style.display = "none"; // what does this do?
+  });
 
   // returns the 4 character string for the current year.
   // this return is used by backTracker() to have a year
   // to work backwards from
-
-
-  //backTracker("42101");
-
-  //graphData();
   function getYear() {
     var now = parseInt(moment().format('YYYY'));
     return now;
-  }
-
-  // initiates the zillow process with user input info
-  function zillowRunner(zip) {
-    zillowGetter(zip);
   }
 
   // initiates the weather data process with user input info
@@ -112,9 +83,6 @@ $(document).ready(function() {
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TAVG array
   function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
-    // if (callCount === 40){
-    //   graphTempAVG(array);
-    // }
     if (callCount >= 40) {
       graphTempAVG(array);
       return;
@@ -149,9 +117,6 @@ $(document).ready(function() {
   // pushed into the beginning of the TMAX array
   // on successful call, calls itself recursively, avoids 429 errors this way
   function noaaTMAX(FIPS, startYear, array, callCount, errorCount) {
-    // if (callCount === 40){
-    //   graphTempMAX(array);
-    // }
     if (callCount >= 40) {
       graphTempMAX(array);
       return;
@@ -173,12 +138,10 @@ $(document).ready(function() {
         startYear--;
         callCount++;
         noaaTMAX(FIPS, startYear, array, callCount, errorCount);
-       
       },
       error: function () {
         errorCount++;
         noaaTMAX(FIPS, startYear, array, callCount, errorCount);
-        
       }
     })
   }
@@ -188,9 +151,6 @@ $(document).ready(function() {
   // pushed into the beginning of the PRCP array
   // on successful call, calls itself recursively, avoids 429 errors this way
   function noaaPRCP(FIPS, startYear, array, callCount, errorCount) {
-    // if (callCount === 40){
-    //   graphPRCP(array);
-    // }
     if (callCount >= 40) {
       graphPRCP(array);
       return;
@@ -237,7 +197,6 @@ $(document).ready(function() {
   // backTracker takes the FIPS argument and works backwards through time,
   // calling the ajax caller functions to add data for each year.
   // really important function!
-
   function backTracker(FIPS) {
     var TAVG = [];
     var TMAX = [];
@@ -247,19 +206,14 @@ $(document).ready(function() {
     noaaTAVG(FIPS, startYear, TAVG, 0, 0);
     noaaTMAX(FIPS, startYear, TMAX, 0, 0);
     noaaPRCP(FIPS, startYear, PRCP, 0, 0);
-
-    // these logs should be deleted eventually!
-    //console.log(TAVG);
-    // console.log(TMAX);
-    // console.log(PRCP);
-    //graphData(TAVG);
   }
 
-  
+
   function graphTempAVG(array) {
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
-    
+    var formattedArray = array.map(function (temp, index) { return { x: year - index, y: temp * 9 / 5 + 32 } });
+
+    // i'm assuming we can delete this?
     // var formattedArray2 = [];
     // for (var i = 0; i<array.length; i++){
     //   formattedArray2.push({x: year-i, y: array[i] * 9/5 + 32});
@@ -268,38 +222,38 @@ $(document).ready(function() {
 
     new Chartist.Line('.TAVG', {
       series: [formattedArray]
-      }, {
-          axisX: {
-            type: Chartist.AutoScaleAxis,
-          },
-      },{
+    }, {
+      axisX: {
+        type: Chartist.AutoScaleAxis,
+      },
+    }, {
     })
   };
 
   function graphTempMAX(array) {
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
+    var formattedArray = array.map(function (temp, index) { return { x: year - index, y: temp * 9 / 5 + 32 } });
     new Chartist.Line('.TMAX', {
       series: [formattedArray]
     }, {
-        axisX: {
-          type: Chartist.AutoScaleAxis,
-        },
-    },{
-  });
+      axisX: {
+        type: Chartist.AutoScaleAxis,
+      },
+    }, {
+    });
   };
 
   function graphPRCP(array) {
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function(temp,index){return{x: year-index, y: temp * 9/5 + 32}});
+    var formattedArray = array.map(function (temp, index) { return { x: year - index, y: temp * 9 / 5 + 32 } });
     new Chartist.Line('.PRCP', {
       series: [formattedArray]
     }, {
-        axisX: {
-          type: Chartist.AutoScaleAxis,
-        },
-    },{
-  });
+      axisX: {
+        type: Chartist.AutoScaleAxis,
+      },
+    }, {
+    });
   };
 
   // just adds a value to an array, at index[0], and shifts the rest back
@@ -319,66 +273,43 @@ $(document).ready(function() {
 
   // this function creates the url and does the ajax call to the Zillow API
   function zillowGetter(address, city, stateInitials, zip) {
-   
+
     var address = spaceToPlusParser(address);
     var city = spaceToPlusParser(city);
     var stateInitials = spaceToPlusParser(stateInitials);
     var zip = spaceToPlusParser(zip);
-    
-    var zillowURL = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
-     + ZWSID + "&address=" + address + "&citystatezip=" + city + "%2C+" + stateInitials +  "+" + zip;
 
-    // once forms are created and jQuery values are gotten, replace below URL with the 
-    // commented out syntax above (should be correct, double check though)
-    // var zillowURL = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
-    //   + ZWSID + "&address=4922+Warrington+Ave&citystatezip=Philadelphia%2C+PA+19143";
+    var zillowURL = "https://www.zillow.com/webservice/GetSearchResults.htm?zws-id="
+      + ZWSID + "&address=" + address + "&citystatezip=" + city + "%2C+" + stateInitials + "+" + zip;
+
     $.ajax({
       // proxy because zillow doesn't accept CORS?
       url: proxy + zillowURL,
       method: "GET"
     }).then(function (response) {
       var JSONresponse = xmlToJson(response);
-      // comment this log out eventually!
-
-      // var zestimate = response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"];
-
-      // var lowRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"];
-
-      // var highRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"];
-
-      // var neighborhoodAVG = response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]
-
-      // $("#zestimate").append(zestimate);
-      // $("#lowRange").append(lowRange);
-      // $("#highRange").append(highRange);
-      // $("neighborhood").append(neighborhoodAVG);
-      // console.log(JSONresponse);
-      // return JSONresponse;
-
-      //var estimate = response.result.array[0].localRealEstate.zindexValue;
-      
       console.log(JSONresponse);
       zillowDisplayer(JSONresponse);
-      return JSONresponse;
+      // return JSONresponse;
 
     });
   };
 
+  // appends values taken from zillow JSONresponse and appends to bar at the top
   function zillowDisplayer(response) {
-    var zestimate = response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"];
-
-    var lowRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"];
-
-    var highRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"];
-
-    var neighborhoodAVG = response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]
+    var zestimate =
+      response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"];
+    var lowRange =
+      response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"];
+    var highRange =
+      response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"];
+    var neighborhoodAVG =
+      response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"];
 
     $("#zestimate").append(zestimate);
     $("#lowRange").append(lowRange);
     $("#highRange").append(highRange);
     $("neighborhood").append(neighborhoodAVG);
-    // console.log(JSONresponse);
-    // return JSONresponse;
   }
 
   // use this function to parse the string inputs from the form that the user fills out
@@ -390,6 +321,7 @@ $(document).ready(function() {
     return parsedString;
   }
 
+  
   // NOTE! the following function is copied verbatim from this website:
   // https://davidwalsh.name/convert-xml-json
   // the zillow API returns xml as default. until i can figure out the proper
