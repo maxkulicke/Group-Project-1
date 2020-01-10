@@ -40,6 +40,9 @@ $(document).ready(function() {
     //console.log(address);
     zillowGetter(address, city, stateIntials, zip);
 
+    document.getElementById("main-form").style.display="none";
+
+
   });
 
 
