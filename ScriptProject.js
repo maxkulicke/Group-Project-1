@@ -80,7 +80,9 @@ $(document).ready(function() {
   // this return is used by backTracker() to have a year
   // to work backwards from
 
+
   //backTracker("42101");
+
   //graphData();
   function getYear() {
     var now = parseInt(moment().format('YYYY'));
@@ -240,6 +242,7 @@ $(document).ready(function() {
   // backTracker takes the FIPS argument and works backwards through time,
   // calling the ajax caller functions to add data for each year.
   // really important function!
+
   // //function backTracker(FIPS) {
   //   var TAVG = [];
   //   var TMAX = [];
@@ -256,6 +259,7 @@ $(document).ready(function() {
   //   // console.log(PRCP);
   //   //graphData(TAVG);
   // });
+
   
   function graphTempAVG(array) {
     
