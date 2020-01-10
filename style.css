@@ -9,3 +9,13 @@
     padding-right: 5px;
 
 }
+.control{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.input{
+    width: 350px;
+    margin: 2px;
+}
