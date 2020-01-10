@@ -40,6 +40,9 @@ $(document).ready(function() {
     //console.log(address);
     zillowGetter(address, city, stateIntials, zip);
 
+    document.getElementById("main-form").style.display="none";
+
+
   });
 
 
@@ -359,6 +362,7 @@ $(document).ready(function() {
     }).then(function (response) {
       var JSONresponse = xmlToJson(response);
       // comment this log out eventually!
+
       // var zestimate = response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"];
 
       // var lowRange = response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"];
@@ -373,7 +377,12 @@ $(document).ready(function() {
       // $("neighborhood").append(neighborhoodAVG);
       // console.log(JSONresponse);
       // return JSONresponse;
-      zillowDisplayer(JSONresponse);
+
+      //var estimate = response.result.array[0].localRealEstate.zindexValue;
+      
+      console.log(JSONresponse);
+      return JSONresponse;
+
     });
   };
 
