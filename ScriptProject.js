@@ -83,11 +83,11 @@ $(document).ready(function () {
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TAVG array
   function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount >= 40) {
+    if (callCount >= 25) {
       graphTempAVG(array);
       return;
     }
-    else if (errorCount >= 1000) {
+    else if (errorCount >= 500) {
       graphTempAVG(array);
       return;
     }
@@ -101,7 +101,7 @@ $(document).ready(function () {
       method: "GET",
       success: function (response) {
         ajaxDataMaker(response, array);
-        startYear--;
+        startYear = startYear - 2;
         callCount++;
         noaaTAVG(FIPS, startYear, array, callCount, errorCount);
       },
@@ -117,11 +117,11 @@ $(document).ready(function () {
   // pushed into the beginning of the TMAX array
   // on successful call, calls itself recursively, avoids 429 errors this way
   function noaaTMAX(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount >= 40) {
+    if (callCount >= 25) {
       graphTempMAX(array);
       return;
     }
-    else if (errorCount >= 1000) {
+    else if (errorCount >= 500) {
       graphTempMAX(array);
       return;
     }
@@ -135,7 +135,7 @@ $(document).ready(function () {
       method: "GET",
       success: function (response) {
         ajaxDataMaker(response, array);
-        startYear--;
+        startYear = startYear - 2;
         callCount++;
         noaaTMAX(FIPS, startYear, array, callCount, errorCount);
       },
@@ -151,11 +151,11 @@ $(document).ready(function () {
   // pushed into the beginning of the PRCP array
   // on successful call, calls itself recursively, avoids 429 errors this way
   function noaaPRCP(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount >= 40) {
+    if (callCount >= 25) {
       graphPRCP(array);
       return;
     }
-    else if (errorCount >= 1000) {
+    else if (errorCount >= 500) {
       graphPRCP(array);
       return;
     }
@@ -169,7 +169,7 @@ $(document).ready(function () {
       method: "GET",
       success: function (response) {
         ajaxDataMaker(response, array);
-        startYear--;
+        startYear = startYear - 2;
         callCount++;
         noaaPRCP(FIPS, startYear, array, callCount, errorCount);
       },
@@ -297,19 +297,26 @@ $(document).ready(function () {
 
   // appends values taken from zillow JSONresponse and appends to bar at the top
   function zillowDisplayer(response) {
-    var zestimate =
-      response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"];
-    var lowRange =
-      response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"];
-    var highRange =
-      response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"];
-    var neighborhoodAVG =
-      response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"];
+    var zestimate = undefinedChecker(
+      response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"]);
+    var lowRange = undefinedChecker(
+      response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.low["#text"]);
+    var highRange = undefinedChecker(
+      response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"]);
+    var neighborhoodAVG = undefinedChecker(
+      response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]);
 
     $("#zestimate").append(zestimate);
-    $("#lowRange").append(lowRange);
-    $("#highRange").append(highRange);
-    $("neighborhood").append(neighborhoodAVG);
+    $("#range").append(lowRange + " - " + highRange);
+    // $("#highRange").append(highRange);
+    $("#neighborhood").append(neighborhoodAVG);
+  }
+
+  function undefinedChecker(string) {
+    if (string == undefined) {
+      string = "no data found";
+    }
+    return string;
   }
 
   // use this function to parse the string inputs from the form that the user fills out
@@ -321,7 +328,7 @@ $(document).ready(function () {
     return parsedString;
   }
 
-  
+
   // NOTE! the following function is copied verbatim from this website:
   // https://davidwalsh.name/convert-xml-json
   // the zillow API returns xml as default. until i can figure out the proper
