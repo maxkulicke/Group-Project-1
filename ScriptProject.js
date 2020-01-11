@@ -216,7 +216,9 @@ $(document).ready(function () {
 
   function graphTempAVG(array) {
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function (temp, index) { return { x: year - index, y: temp * 9 / 5 + 32 } });
+
+    var formattedArray = array.map(function (temp, index) { return { x: year - (index*2), y: temp * 9 / 5 + 32 } });
+
     new Chartist.Line('.TAVG', {
       series: [formattedArray]
     }, {
@@ -229,7 +231,7 @@ $(document).ready(function () {
 
   function graphTempMAX(array) {
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function (temp, index) { return { x: year - index, y: temp * 9 / 5 + 32 } });
+    var formattedArray = array.map(function (temp, index) { return { x: (year - index*2), y: temp * 9 / 5 + 32 } });
     new Chartist.Line('.TMAX', {
       series: [formattedArray]
     }, {
@@ -242,14 +244,21 @@ $(document).ready(function () {
 
   function graphPRCP(array) {
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function (total, index) { return { x: year - index, y: total / 10 * 0.0393701 } });
+
+    var formattedArray = array.map(function (total, index) { return { x: (year - index*2), y: total / 10 * 0.0393701 } });
+
     new Chartist.Line('.PRCP', {
       series: [formattedArray]
     }, {
       axisX: {
         type: Chartist.AutoScaleAxis,
+        
       },
-    }, {
+
+      // axisY: {
+      //   type: Chartist.FixedScaleAxis,
+
+      // }
     });
   };
 
@@ -334,7 +343,9 @@ $(document).ready(function () {
       "https://maps.googleapis.com/maps/api/streetview?size=600x600&location="
       + address + city + stateInitials + zip + "&key=" + googleKey;
 
+
     $("#street-view").append($("<img src=" + streetViewURL + " />"))
+
 
   }
 
