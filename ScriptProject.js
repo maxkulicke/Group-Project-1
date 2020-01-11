@@ -19,7 +19,8 @@
 $(document).ready(function () {
   $("#main-form-2").hide();
   // the NOAA API is where all of weather data comes from
-  var NOAAtoken = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
+  var NOAAtokenMax = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
+  var NOAAtoken = "fuZeuwvpqkvLmzuxfUtEkCXZjBGBtsUF";
 
   // smartyStreets API is what we'll use to convert a zip code query from user into the
   // county FIPS code needed for the NOAA queries
@@ -84,19 +85,45 @@ $(document).ready(function () {
     })
   }
 
+  // RECURSIVE CALL SECTION : DO NOT DELETE
   // this function gets the yearly temp avg data points for a county code
   // it then crunches the numbers down into a single yearly avg which is
   // pushed into the beginning of the TAVG array
-  function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount >= 25) {
-      graphTempAVG(array);
-      return;
-    }
-    else if (errorCount >= 500) {
-      graphTempAVG(array);
-      return;
-    }
-    var endYear = startYear + 1;
+  // function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
+  //   console.log(errorCount);
+  //   if (callCount >= 25) {
+  //     console.log(array);
+  //     graphTempAVG(array);
+  //     return;
+  //   }
+  //   else if (errorCount >= 500) {
+  //     console.log(array);
+  //     graphTempAVG(array);
+  //     return;
+  //   }
+  //   var endYear = startYear + 1;
+  //   var tavgURL =
+  //     "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TAVG&locationid=FIPS:"
+  //     + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
+  //   $.ajax({
+  //     url: tavgURL,
+  //     headers: { token: NOAAtoken },
+  //     method: "GET",
+  //     success: function (response) {
+  //       ajaxDataMaker(response, array);
+  //       startYear = startYear - 2;
+  //       callCount++;
+  //       noaaTAVG(FIPS, startYear, array, callCount, errorCount);
+  //     },
+  //     error: function () {
+  //       errorCount++;
+  //       noaaTAVG(FIPS, startYear, array, callCount, errorCount);
+  //     }
+  //   })
+  // }
+
+  function noaaTAVG(FIPS, startYear, array) {
+    var endYear = startYear + 10;
     var tavgURL =
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TAVG&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
@@ -105,32 +132,17 @@ $(document).ready(function () {
       headers: { token: NOAAtoken },
       method: "GET",
       success: function (response) {
-        ajaxDataMaker(response, array);
-        startYear = startYear - 2;
-        callCount++;
-        noaaTAVG(FIPS, startYear, array, callCount, errorCount);
+        var averages = objectMaker(response);
+        graphTempMAX(averages);
       },
       error: function () {
-        errorCount++;
-        noaaTAVG(FIPS, startYear, array, callCount, errorCount);
+
       }
     })
   }
 
-  // this function gets the yearly temp maximum data points for a county code
-  // it then crunches the numbers down into a single yearly avg which is
-  // pushed into the beginning of the EMXT array
-  // on successful call, calls itself recursively, avoids 429 errors this way
-  function noaaEMXT(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount >= 25) {
-      graphTempMAX(array);
-      return;
-    }
-    else if (errorCount >= 500) {
-      graphTempMAX(array);
-      return;
-    }
-    var endYear = startYear + 1;
+  function noaaEMXT(FIPS, startYear, array) {
+    var endYear = startYear + 10;
     var emxtURL =
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=EMXT&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
@@ -139,32 +151,17 @@ $(document).ready(function () {
       headers: { token: NOAAtoken },
       method: "GET",
       success: function (response) {
-        ajaxDataMaker(response, array);
-        startYear = startYear - 2;
-        callCount++;
-        noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+        var averages = objectMaker(response);
+        graphTempAVG(averages);
       },
       error: function () {
-        errorCount++;
-        noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+
       }
     })
   }
 
-  // this function gets the yearly precipitation total data points for a county code
-  // it then crunches the numbers down into a single yearly avg which is
-  // pushed into the beginning of the PRCP array
-  // on successful call, calls itself recursively, avoids 429 errors this way
-  function noaaPRCP(FIPS, startYear, array, callCount, errorCount) {
-    if (callCount >= 25) {
-      graphPRCP(array);
-      return;
-    }
-    else if (errorCount >= 500) {
-      graphPRCP(array);
-      return;
-    }
-    var endYear = startYear + 1;
+  function noaaPRCP(FIPS, startYear, array) {
+    var endYear = startYear + 10;
     var prcpURL =
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=PRCP&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
@@ -173,16 +170,114 @@ $(document).ready(function () {
       headers: { token: NOAAtoken },
       method: "GET",
       success: function (response) {
-        ajaxDataMaker(response, array);
-        startYear = startYear - 2;
-        callCount++;
-        noaaPRCP(FIPS, startYear, array, callCount, errorCount);
+        var averages = objectMaker(response);
+        graphPRCP(averages);
       },
       error: function () {
-        errorCount++;
-        noaaPRCP(FIPS, startYear, array, callCount, errorCount);
+
       }
     })
+  }
+
+  // this function gets the yearly temp maximum data points for a county code
+  // it then crunches the numbers down into a single yearly avg which is
+  // pushed into the beginning of the EMXT array
+  // on successful call, calls itself recursively, avoids 429 errors this way
+  // function noaaEMXT(FIPS, startYear, array, callCount, errorCount) {
+  //   if (callCount >= 25) {
+  //     graphTempMAX(array);
+  //     return;
+  //   }
+  //   else if (errorCount >= 500) {
+  //     graphTempMAX(array);
+  //     return;
+  //   }
+  //   var endYear = startYear + 1;
+  //   var emxtURL =
+  //     "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=EMXT&locationid=FIPS:"
+  //     + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
+  //   $.ajax({
+  //     url: emxtURL,
+  //     headers: { token: NOAAtoken },
+  //     method: "GET",
+  //     success: function (response) {
+  //       ajaxDataMaker(response, array);
+  //       startYear = startYear - 2;
+  //       callCount++;
+  //       noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+  //     },
+  //     error: function () {
+  //       errorCount++;
+  //       noaaTMAX(FIPS, startYear, array, callCount, errorCount);
+  //     }
+  //   })
+  // }
+
+  // this function gets the yearly precipitation total data points for a county code
+  // it then crunches the numbers down into a single yearly avg which is
+  // pushed into the beginning of the PRCP array
+  // on successful call, calls itself recursively, avoids 429 errors this way
+  // function noaaPRCP(FIPS, startYear, array, callCount, errorCount) {
+  //   if (callCount >= 25) {
+  //     graphPRCP(array);
+  //     return;
+  //   }
+  //   else if (errorCount >= 500) {
+  //     graphPRCP(array);
+  //     return;
+  //   }
+  //   var endYear = startYear + 1;
+  //   var prcpURL =
+  //     "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=PRCP&locationid=FIPS:"
+  //     + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
+  //   $.ajax({
+  //     url: prcpURL,
+  //     headers: { token: NOAAtoken },
+  //     method: "GET",
+  //     success: function (response) {
+  //       ajaxDataMaker(response, array);
+  //       startYear = startYear - 2;
+  //       callCount++;
+  //       noaaPRCP(FIPS, startYear, array, callCount, errorCount);
+  //     },
+  //     error: function () {
+  //       errorCount++;
+  //       noaaPRCP(FIPS, startYear, array, callCount, errorCount);
+  //     }
+  //   })
+  // }
+
+  function objectMaker(response) {
+    var organizedDataSet = {};
+    var array = response.results
+    for (var i = 0; i < array.length; i++) {
+      var year = array[i].date.slice(0, 4);
+      if (organizedDataSet.hasOwnProperty(year)) {
+        organizedDataSet[year].push(array[i].value);
+      }
+      else {
+        organizedDataSet[year] = [array[i].value];
+      }
+    }
+    var averages = objectAverager(organizedDataSet);
+    return averages;
+  }
+
+  function objectAverager(object) {
+    var avgArray = [];
+    for (var property in object) {
+      var avg = yearAvg(object[property]);
+      avgArray.push(avg);
+    }
+    return avgArray;
+  }
+
+  // averages all the values in the array using reduce();
+  function yearAvg(array) {
+    // need to understand following syntax better
+    let sum = array.reduce((previous, current) => current += previous);
+    let arrayAvg = sum / array.length;
+    return arrayAvg;
   }
 
   // this function is called by the noaa functions
@@ -206,11 +301,16 @@ $(document).ready(function () {
     var TAVG = [];
     var EMXT = [];
     var PRCP = [];
-    var startYear = getYear() - 2;
+    var startYear = getYear() - 12;
 
-    noaaTAVG(FIPS, startYear, TAVG, 0, 0);
-    noaaTMAX(FIPS, startYear, EMXT, 0, 0);
-    noaaPRCP(FIPS, startYear, PRCP, 0, 0);
+    // recursive version calls
+    // noaaTAVG(FIPS, startYear, TAVG, 0, 0);
+    // noaaEMXT(FIPS, startYear, EMXT, 0, 0);
+    // noaaPRCP(FIPS, startYear, PRCP, 0, 0);
+
+    noaaTAVG(FIPS, startYear, TAVG);
+    noaaEMXT(FIPS, startYear, EMXT);
+    noaaPRCP(FIPS, startYear, PRCP);
   }
 
 
@@ -262,18 +362,7 @@ $(document).ready(function () {
     });
   };
 
-  // just adds a value to an array, at index[0], and shifts the rest back
-  function arrayMaker(value, array) {
-    array.push(value);
-  }
 
-  // averages all the values in the array using reduce();
-  function yearAvg(array) {
-    // need to understand following syntax better
-    let sum = array.reduce((previous, current) => current += previous);
-    let arrayAvg = sum / array.length;
-    return arrayAvg;
-  }
 
   // zillow stuff
 
