@@ -89,23 +89,24 @@
           </div>
     </div>
 
-    <div class="container" id="main-form-2">
-      <div class="level">
+
+    <div class="tile is-ancestor" id="main-form-2">
+      <div class="tile">
         <div class="level-item" id="street-view"></div>
       </div>
 
-      <div class="level">
-        <div class="columns">
-          <div class="column is-one-third">
-            <div class="ct-chart TAVG"><h4>Average Temperature: °F</h4></div>
+      <div class="tile is-ancestor">
+        <div class="tile is-vertical">
+          <div class="tile is-12 WeatherDots">
+            <div class="ct-chart PRCP" ><h4>Yearly Precipitation</h4></div>
           </div>
-            <div class="column is-one-third">
-              <div class="ct-chart PRCP" ><h4>Yearly Precipitation: Inches/Yr</h4></div>
-            </div>
-            <div class="column is-one-third">
-              <div class="ct-chart TMAX" ><h4>Maximum Temperature: °F</h4></div>
-            </div>
-        </div>
+          <div class="tile is-12 WeatherDots">
+            <div class="ct-chart TAVG"><h4>Average Temperature</h4></div>
+          </div>
+          <div class="tile is-12 WeatherDots">
+            <div class="ct-chart TMAX" ><h4>Maximum Temperature</h4></div>
+          </div>
+
         </div>
       </div>
     </div>
