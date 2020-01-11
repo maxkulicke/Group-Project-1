@@ -17,7 +17,7 @@
 // ajax recursion is finished....
 
 $(document).ready(function () {
-
+  $("#main-form-2").hide();
   // the NOAA API is where all of weather data comes from
   var NOAAtoken = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
 
@@ -48,6 +48,7 @@ $(document).ready(function () {
     weatherRunner(zip);
     // document.getElementById("main-form").style.display = "none"; 
     $("#main-form").empty();
+    $("#main-form-2").show();
   });
 
   // returns the 4 character string for the current year.
@@ -217,13 +218,6 @@ $(document).ready(function () {
     var year = moment().format('YYYY');
     var formattedArray = array.map(function (temp, index) { return { x: year - index, y: temp * 9 / 5 + 32 } });
 
-    // i'm assuming we can delete this?
-    // var formattedArray2 = [];
-    // for (var i = 0; i<array.length; i++){
-    //   formattedArray2.push({x: year-i, y: array[i] * 9/5 + 32});
-    // }
-    //.map, .filter, .foreach
-
     new Chartist.Line('.TAVG', {
       series: [formattedArray]
     }, {
@@ -344,7 +338,7 @@ $(document).ready(function () {
     // streetViewURL does work when entered in a browser, can't seem to make it display as an image src though
     console.log(streetViewURL);
 
-    $("#main-form").append($("<img src=" + streetViewURL + " />"))
+    $("#street-view").append($("<img src=" + streetViewURL + " />"))
 
     // $("#main-form").append($("<img>"))
     //   .attr({
