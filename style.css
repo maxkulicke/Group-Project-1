@@ -17,3 +17,7 @@
     border-radius: 10px;
     
 }
+
+.hero {
+    background: url(images/Front-page-home.jpg) center / cover;
+  }
