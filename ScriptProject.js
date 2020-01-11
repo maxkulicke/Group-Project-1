@@ -33,17 +33,21 @@ $(document).ready(function () {
   // proxy because zillow doesn't accept CORS?
   var proxy = "https://cors-anywhere.herokuapp.com/";
 
+  var googleKey = "AIzaSyBLvMtnaXQWVXtpdpFXhzlpt2F38GO8lkc";
+
 
   $("#submit").on("click", function (event) {
     event.preventDefault();
     var address = $("#address").val();
     var city = $("#city").val();
-    var stateIntials = $("#state").val();
+    var stateInitials = $("#state").val();
     var zip = $("#zip").val();
     //console.log(address);
-    zillowGetter(address, city, stateIntials, zip);
+    zillowGetter(address, city, stateInitials, zip);
+    streetView(address, city, stateInitials, zip);
     weatherRunner(zip);
-    document.getElementById("main-form").style.display = "none"; // what does this do?
+    // document.getElementById("main-form").style.display = "none"; 
+    $("#main-form").empty();
   });
 
   // returns the 4 character string for the current year.
@@ -326,6 +330,27 @@ $(document).ready(function () {
   function spaceToPlusParser(str) {
     var parsedString = str.replace(/ /g, '+');
     return parsedString;
+  }
+
+  function streetView(address, city, stateInitials, zip) {
+    var address = spaceToPlusParser(address);
+    var city = spaceToPlusParser(city);
+    var stateInitials = spaceToPlusParser(stateInitials);
+    var zip = spaceToPlusParser(zip);
+    var streetViewURL =
+      "https://maps.googleapis.com/maps/api/streetview?size=600x600&location="
+      + address + city + stateInitials + zip + "&key=" + googleKey;
+
+    // streetViewURL does work when entered in a browser, can't seem to make it display as an image src though
+    console.log(streetViewURL);
+
+    $("#main-form").append($("<img src=" + streetViewURL + " />"))
+
+    // $("#main-form").append($("<img>"))
+    //   .attr({
+    //     "src=": streetViewURL,
+    //   });
+
   }
 
 
