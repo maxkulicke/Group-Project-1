@@ -17,7 +17,9 @@
 // ajax recursion is finished....
 
 $(document).ready(function () {
+
   $("#main-form-2").hide();
+  $(".zillowLink").hide();
   // the NOAA API is where all of weather data comes from
   var NOAAtokenMax = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
   var NOAAtoken = "fuZeuwvpqkvLmzuxfUtEkCXZjBGBtsUF";
@@ -315,6 +317,7 @@ $(document).ready(function () {
 
 
   function graphTempAVG(array) {
+    $("#main-form-2").hide();
     var year = moment().format('YYYY');
 
     var formattedArray = array.map(function (temp, index) { return { x: year - (index*2), y: temp * 9 / 5 + 32 } });
@@ -330,6 +333,7 @@ $(document).ready(function () {
   };
 
   function graphTempMAX(array) {
+    $("#main-form-2").hide();
     var year = moment().format('YYYY');
     var formattedArray = array.map(function (temp, index) { return { x: (year - index*2), y: temp * 9 / 5 + 32 } });
     new Chartist.Line('.TMAX', {
@@ -343,6 +347,7 @@ $(document).ready(function () {
   };
 
   function graphPRCP(array) {
+    $("#main-form-2").hide();
     var year = moment().format('YYYY');
 
     var formattedArray = array.map(function (total, index) { return { x: (year - index*2), y: total / 10 * 0.0393701 } });
@@ -400,11 +405,16 @@ $(document).ready(function () {
       response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"]);
     var neighborhoodAVG = undefinedChecker(
       response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]);
+      var zillowLink = undefinedChecker(
+        response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]);
+        console.log(zillowLink);
 
     $("#zestimate").append(zestimate);
     $("#range").append(lowRange + " - " + highRange);
     // $("#highRange").append(highRange);
     $("#neighborhood").append(neighborhoodAVG);
+    $(".zillowLink").click(function() {
+      window.location = zillowLink + this.id;
   }
 
   function undefinedChecker(string) {

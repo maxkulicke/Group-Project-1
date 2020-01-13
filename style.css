@@ -7,6 +7,12 @@
     font-weight: bold;
     color: rgb(22, 21, 21);
 }
+#buttonHeading {
+
+    align-items: center;
+    text-decoration: underline;
+
+}
 body {
     background-image: url('images/Front-page-home.jpg');
     background-color: rgb(150, 201, 233);
