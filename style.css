@@ -36,8 +36,7 @@ body {
     text-align: center;
     color: black;
     padding: 5px;
-    border-radius: 5px;
-    /* padding-right: 5px; */
+
     
 }
 
@@ -67,4 +66,7 @@ h4 {
     width: 350px;
     margin: 2px;
 
+}
+.WeatherDots {
+    margin: 2px;
 }

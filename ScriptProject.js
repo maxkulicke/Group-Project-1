@@ -128,9 +128,9 @@ $(document).ready(function () {
 
   // this function gets the yearly temp maximum data points for a county code
   // it then crunches the numbers down into a single yearly avg which is
-  // pushed into the beginning of the TMAX array
+  // pushed into the beginning of the EMXT array
   // on successful call, calls itself recursively, avoids 429 errors this way
-  function noaaTMAX(FIPS, startYear, array, callCount, errorCount) {
+  function noaaEMXT(FIPS, startYear, array, callCount, errorCount) {
     if (callCount >= 25) {
       graphTempMAX(array);
       return;
@@ -140,11 +140,11 @@ $(document).ready(function () {
       return;
     }
     var endYear = startYear + 1;
-    var tmaxURL =
-      "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TMAX&locationid=FIPS:"
+    var emxtURL =
+      "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=EMXT&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
     $.ajax({
-      url: tmaxURL,
+      url: emxtURL,
       headers: { token: NOAAtoken },
       method: "GET",
       success: function (response) {
@@ -213,18 +213,19 @@ $(document).ready(function () {
   // really important function!
   function backTracker(FIPS) {
     var TAVG = [];
-    var TMAX = [];
+    var EMXT = [];
     var PRCP = [];
     var startYear = getYear() - 2;
 
-    noaaTAVG(FIPS, startYear, TAVG, 0, 0);
-    noaaTMAX(FIPS, startYear, TMAX, 0, 0);
-    noaaPRCP(FIPS, startYear, PRCP, 0, 0);
+    // noaaTAVG(FIPS, startYear, TAVG, 0, 0);
+    // noaaTMAX(FIPS, startYear, EMXT, 0, 0);
+    // noaaPRCP(FIPS, startYear, PRCP, 0, 0);
   }
 
 
   function graphTempAVG(array) {
     var year = moment().format('YYYY');
+
     var formattedArray = array.map(function (temp, index) { return { x: year - (index*2), y: temp * 9 / 5 + 32 } });
 
     new Chartist.Line('.TAVG', {
@@ -252,7 +253,9 @@ $(document).ready(function () {
 
   function graphPRCP(array) {
     var year = moment().format('YYYY');
+
     var formattedArray = array.map(function (total, index) { return { x: (year - index*2), y: total / 10 * 0.0393701 } });
+
     new Chartist.Line('.PRCP', {
       series: [formattedArray]
     }, {
@@ -358,15 +361,9 @@ $(document).ready(function () {
       "https://maps.googleapis.com/maps/api/streetview?size=600x600&location="
       + address + city + stateInitials + zip + "&key=" + googleKey;
 
-    // streetViewURL does work when entered in a browser, can't seem to make it display as an image src though
-    console.log(streetViewURL);
 
     $("#street-view").append($("<img src=" + streetViewURL + " />"))
 
-    // $("#main-form").append($("<img>"))
-    //   .attr({
-    //     "src=": streetViewURL,
-    //   });
 
   }
 
