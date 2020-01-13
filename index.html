@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Group Project 1</title>
+  <title>Homebuyer's Weather</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   <link rel="stylesheet" href="style.css">
@@ -30,91 +30,103 @@
 <nav class="level">
   <div class="level-item has-text-centered">
     <div>
-      <p class="heading">Zillow Estimate $</p>
-      <p class="title" id="zestimate">500,000</p>
+      <p class="heading">Zillow Estimate: $</p>
+      <p class="title" id="zestimate"></p>
     </div>
   </div>
   <div class="level-item has-text-centered">
     <div>
 
-      <p class="heading">Neighborhood Range $ (low - high)</p>
-      <p class="title" id="range">500 - 60000</p>
+      <p class="heading">Neighborhood Range $ (Low - High)</p>
+      <p class="title" id="range"></p>
 
     </div>
   </div>
-  <!-- <div class="level-item has-text-centered">
+   <div class="level-item has-text-centered">
     <div>
-
-      <p class="heading">High Range</p>
-      <p class="title" id="highRange"></p>
-    </div>
-  </div> -->
-  <div class="level-item has-text-centered">
-    <div>
-      <p class="heading">Neighborhood Avg $</p>
-      <p class="title" id="neighborhood">300,000</p>
-
+      <p class="heading">Neighborhood Avg: $</p>
+      <p class="title" id="neighborhood"></p>
     </div>
   </div>
+    <div class="level-item has-text-centered">
+      <div>
+        <p class="heading">Zillow Listing: </p>
+        <p class="title zillowLink" id="buttonHeading">Click!</p>
+      </div>
+    </div>
+ 
 </nav>
 <body>
   <form>
-  <section class="hero is-fullheight">
-    <header class="hero-body">
-      <div class="is-overlay has-text-centered" style="top: 82px;">
-        <!-- <h1 class="title is-1 has-text-white">Find The Home of Your Dreams</h1>
-        <h2 class="subtitle is-4 has-text-white">We'll help you make sure the climate is just right</h2>
-      </div> -->
-    </header>
+    <section class="hero is-fullheight">
+      <header class="hero-body">
+        <div class="is-overlay has-text-centered" style="top: 82px;">
+          <!-- <h1 class="title is-1 has-text-white">Find The Home of Your Dreams</h1>
+          <h2 class="subtitle is-4 has-text-white">We'll help you make sure the climate is just right</h2>
+        </div> -->
+      </header>
 
-    <div class="container" id="main-form">
+      <div class="container" id="main-form">
 
-      <div class="level">
-        <div class="level-item">
-          <div class="field has-addons">
+        <div class="level">
+          <div class="level-item">
+            <div class="field has-addons">
+                <div class="control">
+                  <input class="input" type="text" placeholder="address" id="address"> 
+                  <input class="input" type="text" placeholder="city" id="city">
+                  <input class="input" type="text" placeholder="state" id="state">
+                  <input class="input" type="text" placeholder="zip" id="zip">
+                </div>
+              </div>
+          </div>
+
+        </div>
+            <div class="level-item">
               <div class="control">
-                <input class="input" type="text" placeholder="address" id="address"> 
-                <input class="input" type="text" placeholder="city" id="city">
-                <input class="input" type="text" placeholder="state" id="state">
-                <input class="input" type="text" placeholder="zip" id="zip">
+                <button class="button is-primary" type="submit" id="submit">Submit</button>
               </div>
             </div>
+      </div>
+
+      <div class="container" id="main-form-2">
+        <div class="level">
+          <div class="level-item" id="street-view"></div>
         </div>
 
-      </div>
-          <div class="level-item">
-            <div class="control">
-              <button class="button is-primary" type="submit" id="submit">Submit</button>
-            </div>
-          </div>
-    </div>
-
-    <div class="container" id="main-form-2">
-      <div class="level">
-        <div class="level-item" id="street-view"></div>
-      </div>
-
-      <div class="level">
-        <div class="columns">
-          <div class="column is-one-third">
-            <div class="ct-chart TAVG"><h4>Average Temperature: °F</h4></div>
-          </div>
+        <div class="level">
+          <div class="columns">
             <div class="column is-one-third">
-              <div class="ct-chart PRCP" ><h4>Yearly Precipitation: Inches/Yr</h4></div>
+              <div class="ct-chart TAVG"><h4>Average Temperature: °F</h4></div>
             </div>
-            <div class="column is-one-third">
-              <div class="ct-chart TMAX" ><h4>Maximum Temperature: °F</h4></div>
-            </div>
-        </div>
-        </div>
+              <div class="column is-one-third">
+                <div class="ct-chart PRCP" ><h4>Yearly Precipitation: Inches/Yr</h4></div>
+              </div>
+              <div class="column is-one-third">
+                <div class="ct-chart TMAX" ><h4>Maximum Temperature: °F</h4></div>
+              </div>
+          </div>
+          </div>
       </div>
-    </div>
-    <!-- <p class="control">
-      <button class="button" type="submit" id="submit">
-        Search
-      </button> -->
-  </section>
-</form>
+
+     <div class="container" id="main-form-3">
+       <div class="columns">
+         <div class="column">
+           <h4>Content Loading...</h4>
+         </div> <br>
+         <div class="column">
+          <div style="width:100%;height:0;padding-bottom:90%;"><iframe src="https://giphy.com/embed/x4O0fjpQfoBZS" width="100%" height="100%" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div><p><a href="https://giphy.com/gifs/disney-house-up-x4O0fjpQfoBZS">via GIPHY</a></p>
+         </div>
+
+       </div>
+     
+     </div>
+    
+      <!-- <p class="control">
+        <button class="button" type="submit" id="submit">
+          Search
+        </button> -->
+    </section>
+  </form>
 
 
 <script

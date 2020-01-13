@@ -18,6 +18,8 @@
 
 $(document).ready(function () {
   $("#main-form-2").hide();
+  $("#main-form-3").hide();
+  $("#buttonHeading").hide();
   // the NOAA API is where all of weather data comes from
   var NOAAtoken = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
 
@@ -34,7 +36,10 @@ $(document).ready(function () {
   var proxy = "https://cors-anywhere.herokuapp.com/";
 
   var googleKey = "AIzaSyBLvMtnaXQWVXtpdpFXhzlpt2F38GO8lkc";
-
+//call street view after noaacalls
+//hide giphy after noaacalls
+//show giphy on onclick
+//show main form 2 affter noaa call
 
   $("#submit").on("click", function (event) {
     event.preventDefault();
@@ -48,7 +53,9 @@ $(document).ready(function () {
     weatherRunner(zip);
     // document.getElementById("main-form").style.display = "none"; 
     $("#main-form").empty();
-    $("#main-form-2").show();
+    $("#main-form-3").show();
+    $("body").css("background-image","none");
+    //$("#main-form-2").show();
   });
 
   // returns the 4 character string for the current year.
@@ -90,6 +97,8 @@ $(document).ready(function () {
   function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
     if (callCount >= 25) {
       graphTempAVG(array);
+      $("#main-form-3").hide();
+      $("#main-form-2").show();
       return;
     }
     else if (errorCount >= 500) {
@@ -308,11 +317,20 @@ $(document).ready(function () {
       response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"]);
     var neighborhoodAVG = undefinedChecker(
       response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]);
+    var zillowLink = undefinedChecker(
+      response["SearchResults:searchresults"].response.results.result.links.homedetails["#text"]);
+      console.log(zillowLink);
 
     $("#zestimate").append(zestimate);
     $("#range").append(lowRange + " - " + highRange);
     // $("#highRange").append(highRange);
     $("#neighborhood").append(neighborhoodAVG);
+    $("#buttonHeading").show();
+
+    $(".zillowLink").click(function() {
+      window.location = zillowLink + this.id;
+    });
+
   }
 
   function undefinedChecker(string) {
