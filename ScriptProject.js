@@ -18,7 +18,7 @@
 
 $(document).ready(function () {
   $("#main-form-2").hide();
-  $("#main-form-3").hide();
+  //$("#main-form-3").hide();
   $("#buttonHeading").hide();
   // the NOAA API is where all of weather data comes from
   var NOAAtoken = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
@@ -53,7 +53,7 @@ $(document).ready(function () {
     weatherRunner(zip);
     // document.getElementById("main-form").style.display = "none"; 
     $("#main-form").empty();
-    $("#main-form-3").show();
+    //$("#main-form-3").show();
     $("body").css("background-image","none");
     //$("#main-form-2").show();
   });
@@ -323,6 +323,7 @@ $(document).ready(function () {
     var zillowLink = undefinedChecker(
       response["SearchResults:searchresults"].response.results.result.links.homedetails["#text"]);
       console.log(zillowLink);
+      //response["SearchResults:searchresults"].response.results.result.links.homedetails["#text"]
 
     $("#zestimate").append(zestimate);
     $("#range").append(lowRange + " - " + highRange);
