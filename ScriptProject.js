@@ -50,8 +50,9 @@ $(document).ready(function () {
     streetView(address, city, stateInitials, zip);
     weatherRunner(zip);
     // document.getElementById("main-form").style.display = "none"; 
-    $("#main-form").empty();
+    $("#main-form").hide();
     $("#main-form-2").show();
+    $("body").css("background-image","none");
   });
 
   // returns the 4 character string for the current year.
@@ -317,7 +318,7 @@ $(document).ready(function () {
 
 
   function graphTempAVG(array) {
-    $("#main-form-2").hide();
+    $("#main-form-2").show();
     var year = moment().format('YYYY');
 
     var formattedArray = array.map(function (temp, index) { return { x: year - (index*2), y: temp * 9 / 5 + 32 } });
@@ -327,13 +328,14 @@ $(document).ready(function () {
     }, {
       axisX: {
         type: Chartist.AutoScaleAxis,
+        onlyInteger: true,
       },
     }, {
     })
   };
 
   function graphTempMAX(array) {
-    $("#main-form-2").hide();
+    $("#main-form-2").show();
     var year = moment().format('YYYY');
     var formattedArray = array.map(function (temp, index) { return { x: (year - index*2), y: temp * 9 / 5 + 32 } });
     new Chartist.Line('.TMAX', {
@@ -341,13 +343,14 @@ $(document).ready(function () {
     }, {
       axisX: {
         type: Chartist.AutoScaleAxis,
+        onlyInteger: true
       },
     }, {
-    });
+    })
   };
 
   function graphPRCP(array) {
-    $("#main-form-2").hide();
+    $("#main-form-2").show();
     var year = moment().format('YYYY');
 
     var formattedArray = array.map(function (total, index) { return { x: (year - index*2), y: total / 10 * 0.0393701 } });
@@ -357,14 +360,14 @@ $(document).ready(function () {
     }, {
       axisX: {
         type: Chartist.AutoScaleAxis,
-        
+        onlyInteger: true,
       },
 
       // axisY: {
       //   type: Chartist.FixedScaleAxis,
 
       // }
-    });
+    })
   };
 
 
@@ -373,6 +376,8 @@ $(document).ready(function () {
 
   // this function creates the url and does the ajax call to the Zillow API
   function zillowGetter(address, city, stateInitials, zip) {
+
+    $(".zillowLink").show();
 
     var address = spaceToPlusParser(address);
     var city = spaceToPlusParser(city);
@@ -408,14 +413,16 @@ $(document).ready(function () {
       var zillowLink = undefinedChecker(
         response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]);
         console.log(zillowLink);
+        //response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]
 
     $("#zestimate").append(zestimate);
     $("#range").append(lowRange + " - " + highRange);
     // $("#highRange").append(highRange);
     $("#neighborhood").append(neighborhoodAVG);
     $(".zillowLink").click(function() {
-      window.location = zillowLink + this.id;
-  }
+      window.location = zillowLink + this.id
+    });
+  };
 
   function undefinedChecker(string) {
     if (string == undefined) {
@@ -493,5 +500,4 @@ $(document).ready(function () {
     }
     return obj;
   };
-
 });
