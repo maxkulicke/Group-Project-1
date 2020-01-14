@@ -45,8 +45,8 @@ $(document).ready(function () {
   // initiates the weather data process with user input info
   function weatherRunner(zip) {
     // we only get 250/month for free, so use sparingly when testing!!!
-    zipCaller(zip); // avoiding zipCaller for now to not max out API calls!!
-    // backTracker("42101");
+    // zipCaller(zip); // avoiding zipCaller for now to not max out API calls!!
+    backTracker("42101");
   }
 
   // queries smartyStreets API with zip code from user, passes
