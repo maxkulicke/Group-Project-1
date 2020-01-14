@@ -16,15 +16,15 @@
   <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
-    
-  </head>
 
-  <!-- <style>
+</head>
+
+<!-- <style>
     .hero {
       background: url(images/Front-page-home.jpg) center / cover;
     }
   </style> -->
-  
+
 </head>
 
 <nav class="level">
@@ -42,7 +42,7 @@
 
     </div>
   </div>
- 
+
   <div class="level-item has-text-centered zillowStats">
     <div>
       <p class="heading">Neighborhood Avg $</p>
@@ -56,74 +56,76 @@
     </div>
   </div>
 </nav>
+
 <body>
   <form>
-  <section class="hero is-fullheight">
-    <!-- <header class="hero-body">
+    <section class="hero is-fullheight">
+      <!-- <header class="hero-body">
       <div class="is-overlay has-text-centered" style="top: 82px;">
         <h1 class="title is-1 has-text-white">Find The Home of Your Dreams</h1>
         <h2 class="subtitle is-4 has-text-white">We'll help you make sure the climate is just right</h2>
       </div>
     </header>  -->
 
-    <div class="container" id="main-form">
+      <div class="container" id="main-form">
 
-      <div class="level">
-        <div class="level-item">
-          <div class="field has-addons">
+        <div class="level">
+          <div class="level-item">
+            <div class="field has-addons">
               <div class="control">
-                <input class="input" type="text" placeholder="Address" id="address"> 
+                <input class="input" type="text" placeholder="Address" id="address">
                 <input class="input" type="text" placeholder="City" id="city">
                 <input class="input" type="text" placeholder="State" id="state">
                 <input class="input" type="text" placeholder="Zip" id="zip">
                 <button class="button is-primary" type="submit" id="submit">Submit</button>
               </div>
             </div>
-        </div>
+          </div>
 
+        </div>
+        <div class="level-item">
+          <div class="control">
+          </div>
+        </div>
       </div>
-          <div class="level-item">
-            <div class="control">
+
+      <div class="tile is-ancestor">
+        <div class="tile is-parent" id="main-form-2">
+          <div class="tile is-6 is-child streetView">
+            <div class="level-item" id="street-view"></div>
+          </div>
+
+          <div class="tile is-6 is-child graphs">
+            <div class="tile is-vertical">
+              <div class="tile is-12 WeatherDots">
+                <div class="ct-chart PRCP">
+                  <h4>Yearly Precipitation: Inches/yr</h4>
+                </div>
+              </div>
+              <div class="tile is-12 WeatherDots">
+                <div class="ct-chart TAVG">
+                  <h4>Average Temperature: °F</h4>
+                </div>
+              </div>
+              <div class="tile is-12 WeatherDots">
+                <div class="ct-chart TMAX">
+                  <h4>Maximum Temperature: °F</h4>
+                </div>
+              </div>
             </div>
           </div>
-    </div>
-
-
-    <div class="tile" id="main-form-2">
-      <div class="tile is-6 streetView">
-        <div class="level-item" id="street-view"></div>
-      </div>
-
-      <div class="tile is-6 graphs">
-        <div class="tile is-vertical">
-          <div class="tile is-12 WeatherDots">
-            <div class="ct-chart PRCP" ><h4>Yearly Precipitation: Inches/yr</h4></div>
-          </div>
-          <div class="tile is-12 WeatherDots">
-            <div class="ct-chart TAVG"><h4>Average Temperature: °F</h4></div>
-          </div>
-          <div class="tile is-12 WeatherDots">
-            <div class="ct-chart TMAX" ><h4>Maximum Temperature: °F</h4></div>
-          </div>
-
         </div>
       </div>
-    </div>
-    <!-- <p class="control">
-      <button class="button" type="submit" id="submit">
-        Search
-      </button> -->
-  </section>
-</form>
+
+    </section>
+  </form>
 
 
-<script
-  src="https://code.jquery.com/jquery-3.4.1.js"
-  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
-  crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 
-<script src="ScriptProject.js"></script>
+  <script src="ScriptProject.js"></script>
 
 </body>
 
