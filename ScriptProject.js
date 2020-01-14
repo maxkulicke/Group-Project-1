@@ -84,7 +84,7 @@ $(document).ready(function () {
       method: "GET",
       success: function (response) {
         var averages = objectMaker(response);
-        graphTempMAX(averages);
+        graphTempAVG(averages);
       },
       error: function () {
       }
@@ -102,7 +102,7 @@ $(document).ready(function () {
       method: "GET",
       success: function (response) {
         var averages = objectMaker(response);
-        graphTempAVG(averages);
+        graphTempMAX(averages);
       },
       error: function () {
       }
