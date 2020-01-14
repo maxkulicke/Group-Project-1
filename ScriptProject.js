@@ -30,7 +30,6 @@ $(document).ready(function () {
     zillowGetter(address, city, stateInitials, zip);
     streetView(address, city, stateInitials, zip);
     weatherRunner(zip);
-    // document.getElementById("main-form").style.display = "none"; 
     $("#main-form").hide();
     $("#main-form-2").show();
     $("body").css("background-image", "none");
@@ -162,13 +161,9 @@ $(document).ready(function () {
   }
 
   function graphTempAVG(array) {
-
     $("#main-form-2").show();
-
     var year = moment().format('YYYY');
-
     var formattedArray = array.map(function (temp, index) { return { x: year - (index * 2), y: temp * 9 / 5 + 32 } });
-
     new Chartist.Line('.TAVG', {
       series: [formattedArray]
     }, {
@@ -181,9 +176,7 @@ $(document).ready(function () {
   };
 
   function graphTempMAX(array) {
-
     $("#main-form-2").show();
-
     var year = moment().format('YYYY');
     var formattedArray = array.map(function (temp, index) { return { x: (year - index * 2), y: temp * 9 / 5 + 32 } });
     new Chartist.Line('.TMAX', {
@@ -198,13 +191,9 @@ $(document).ready(function () {
   };
 
   function graphPRCP(array) {
-
     $("#main-form-2").show();
-
     var year = moment().format('YYYY');
-
     var formattedArray = array.map(function (total, index) { return { x: (year - index * 2), y: total / 10 * 0.0393701 } });
-
     new Chartist.Line('.PRCP', {
       series: [formattedArray]
     }, {
@@ -212,11 +201,6 @@ $(document).ready(function () {
         type: Chartist.AutoScaleAxis,
         onlyInteger: true,
       },
-
-      // axisY: {
-      //   type: Chartist.FixedScaleAxis,
-
-      // }
     })
   };
 
@@ -247,8 +231,6 @@ $(document).ready(function () {
 
   // appends values taken from zillow JSONresponse and appends to bar at the top
   function zillowDisplayer(response) {
-    console.log(response);
-    console.log(response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]);
     var zestimate = undefinedChecker(
       response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"]);
     var lowRange = undefinedChecker(
@@ -259,16 +241,12 @@ $(document).ready(function () {
       response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]);
     var zillowLink = undefinedChecker(
       response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]);
-    console.log(zillowLink);
-
-    //response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]
-
 
     $("#zestimate").append(zestimate);
     $("#range").append(lowRange + " - " + highRange);
     $("#neighborhood").append(neighborhoodAVG);
     $(".zillowLink").click(function () {
-      window.location = zillowLink + this.id;
+      window.location = zillowLink;
     });
   }
 
@@ -296,10 +274,7 @@ $(document).ready(function () {
       "https://maps.googleapis.com/maps/api/streetview?size=600x600&location="
       + address + city + stateInitials + zip + "&key=" + googleKey;
 
-
     $("#street-view").append($("<img src=" + streetViewURL + " />"))
-
-
   }
 
 
