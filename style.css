@@ -54,6 +54,7 @@ h4 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: 300px;
 }
 .input{
     width: 350px;
@@ -62,4 +63,23 @@ h4 {
 }
 .WeatherDots {
     margin: 2px;
+}
+
+.main-form-2 {
+
+    width: 100%;
+    margin-left: 20px;
+    margin-right: 20px
+}
+
+.streetView {
+
+    padding-left: 30px;
+    
+}
+
+.graphs {
+
+    padding-right: 30px;
+    margin-top: 100px;
 }

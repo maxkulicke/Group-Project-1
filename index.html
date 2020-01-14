@@ -28,13 +28,13 @@
 </head>
 
 <nav class="level">
-  <div class="level-item has-text-centered">
+  <div class="level-item has-text-centered zillowStats">
     <div>
       <p class="heading">Zillow Estimate $</p>
       <p class="title" id="zestimate"></p>
     </div>
   </div>
-  <div class="level-item has-text-centered">
+  <div class="level-item has-text-centered zillowStats">
     <div>
 
       <p class="heading">Neighborhood Range $ (low - high)</p>
@@ -43,13 +43,13 @@
     </div>
   </div>
  
-  <div class="level-item has-text-centered">
+  <div class="level-item has-text-centered zillowStats">
     <div>
       <p class="heading">Neighborhood Avg $</p>
       <p class="title" id="neighborhood"></p>
     </div>
   </div>
-  <div class="level-item has-text-centered">
+  <div class="level-item has-text-centered zillowStats">
     <div>
       <p class="heading">Zillow Listing: </p>
       <a class="title zillowLink" id="buttonHeading">Click!</a>
@@ -59,12 +59,12 @@
 <body>
   <form>
   <section class="hero is-fullheight">
-    <header class="hero-body">
+    <!-- <header class="hero-body">
       <div class="is-overlay has-text-centered" style="top: 82px;">
-        <!-- <h1 class="title is-1 has-text-white">Find The Home of Your Dreams</h1>
+        <h1 class="title is-1 has-text-white">Find The Home of Your Dreams</h1>
         <h2 class="subtitle is-4 has-text-white">We'll help you make sure the climate is just right</h2>
-      </div> -->
-    </header>
+      </div>
+    </header>  -->
 
     <div class="container" id="main-form">
 
@@ -72,10 +72,11 @@
         <div class="level-item">
           <div class="field has-addons">
               <div class="control">
-                <input class="input" type="text" placeholder="address" id="address"> 
-                <input class="input" type="text" placeholder="city" id="city">
-                <input class="input" type="text" placeholder="state" id="state">
-                <input class="input" type="text" placeholder="zip" id="zip">
+                <input class="input" type="text" placeholder="Address" id="address"> 
+                <input class="input" type="text" placeholder="City" id="city">
+                <input class="input" type="text" placeholder="State" id="state">
+                <input class="input" type="text" placeholder="Zip" id="zip">
+                <button class="button is-primary" type="submit" id="submit">Submit</button>
               </div>
             </div>
         </div>
@@ -83,18 +84,17 @@
       </div>
           <div class="level-item">
             <div class="control">
-              <button class="button is-primary" type="submit" id="submit">Submit</button>
             </div>
           </div>
     </div>
 
 
-    <div class="tile is-ancestor" id="main-form-2">
-      <div class="tile">
+    <div class="tile" id="main-form-2">
+      <div class="tile is-6 streetView">
         <div class="level-item" id="street-view"></div>
       </div>
 
-      <div class="tile is-ancestor">
+      <div class="tile is-6 graphs">
         <div class="tile is-vertical">
           <div class="tile is-12 WeatherDots">
             <div class="ct-chart PRCP" ><h4>Yearly Precipitation: Inches/yr</h4></div>
