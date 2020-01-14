@@ -1,5 +1,7 @@
 $(document).ready(function () {
+
   $("#main-form-2").hide();
+  $(".zillowLink").hide();
   // the NOAA API is where all of weather data comes from
   var NOAAtokenMax = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
   var NOAAtokenAdrian = "fuZeuwvpqkvLmzuxfUtEkCXZjBGBtsUF";
@@ -28,8 +30,10 @@ $(document).ready(function () {
     zillowGetter(address, city, stateInitials, zip);
     streetView(address, city, stateInitials, zip);
     weatherRunner(zip);
-    $("#main-form").empty();
+    // document.getElementById("main-form").style.display = "none"; 
+    $("#main-form").hide();
     $("#main-form-2").show();
+    $("body").css("background-image","none");
   });
 
   // returns 4 character string for the current year.
@@ -158,48 +162,70 @@ $(document).ready(function () {
   }
 
   function graphTempAVG(array) {
+
+    $("#main-form-2").show();
+
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function (temp, index) { return { x: year - index, y: temp * 9 / 5 + 32 } });
+
+    var formattedArray = array.map(function (temp, index) { return { x: year - (index*2), y: temp * 9 / 5 + 32 } });
+
     new Chartist.Line('.TAVG', {
       series: [formattedArray]
     }, {
       axisX: {
         type: Chartist.AutoScaleAxis,
+        onlyInteger: true,
       },
     }, {
     })
   };
 
   function graphTempMAX(array) {
+
+    $("#main-form-2").show();
+
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function (temp, index) { return { x: year - index, y: temp * 9 / 5 + 32 } });
+    var formattedArray = array.map(function (temp, index) { return { x: (year - index*2), y: temp * 9 / 5 + 32 } });
     new Chartist.Line('.TMAX', {
       series: [formattedArray]
     }, {
       axisX: {
         type: Chartist.AutoScaleAxis,
+        onlyInteger: true
       },
     }, {
-    });
+    })
   };
 
   function graphPRCP(array) {
+
+    $("#main-form-2").show();
+
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function (total, index) { return { x: year - index, y: total / 10 * 0.0393701 } });
+
+    var formattedArray = array.map(function (total, index) { return { x: (year - index*2), y: total / 10 * 0.0393701 } });
+
     new Chartist.Line('.PRCP', {
       series: [formattedArray]
     }, {
       axisX: {
         type: Chartist.AutoScaleAxis,
+        onlyInteger: true,
       },
-    }, {
-    });
+
+      // axisY: {
+      //   type: Chartist.FixedScaleAxis,
+
+      // }
+    })
   };
 
   // zillow stuff
 
   // this function creates the url and does the ajax call to the Zillow API
   function zillowGetter(address, city, stateInitials, zip) {
+
+    $(".zillowLink").show();
 
     var address = spaceToPlusParser(address);
     var city = spaceToPlusParser(city);
@@ -231,11 +257,21 @@ $(document).ready(function () {
       response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"]);
     var neighborhoodAVG = undefinedChecker(
       response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]);
+      var zillowLink = undefinedChecker(
+        response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]);
+        console.log(zillowLink);
+
+        //response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]
+
 
     $("#zestimate").append(zestimate);
     $("#range").append(lowRange + " - " + highRange);
     $("#neighborhood").append(neighborhoodAVG);
+    $(".zillowLink").click(function() {
+
+      window.location = zillowLink + this.id;
   }
+
 
   function undefinedChecker(string) {
     if (string == undefined) {
@@ -260,7 +296,9 @@ $(document).ready(function () {
       "https://maps.googleapis.com/maps/api/streetview?size=600x600&location="
       + address + city + stateInitials + zip + "&key=" + googleKey;
 
+
     $("#street-view").append($("<img src=" + streetViewURL + " />"))
+
 
   }
 
