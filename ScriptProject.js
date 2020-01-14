@@ -1,26 +1,8 @@
-
-// TODO
-
-// write form value jQuery targets, possibly write a function that creates an address object?
-
-// figure out units of measurement for the 3 differnet statistics (TAVG, TMAX, PRCP) (max can do that)
-
-// figure out what properties of the zillow object we want to work with, access and 
-// create html appropriately. 
-
-// figure out timing issue w/ ajax calls... (mostly for max)
-// two main issues: 
-// 1) delay in the calls to avoid rate limit errors causes serious lag in the load of 
-// the weather data. currently resolved by just using the error path to repeat the call.
-// not sure if that is a viable long term solution....
-// 2) whatever function those arrays will be sent to will most likely be called before the 
-// ajax recursion is finished....
-
 $(document).ready(function () {
   $("#main-form-2").hide();
   // the NOAA API is where all of weather data comes from
   var NOAAtokenMax = "OBzsTvSdeIEAZDdTInysIDJSVQZdhKtx";
-  var NOAAtoken = "fuZeuwvpqkvLmzuxfUtEkCXZjBGBtsUF";
+  var NOAAtokenAdrian = "fuZeuwvpqkvLmzuxfUtEkCXZjBGBtsUF";
 
   // smartyStreets API is what we'll use to convert a zip code query from user into the
   // county FIPS code needed for the NOAA queries
@@ -43,18 +25,15 @@ $(document).ready(function () {
     var city = $("#city").val();
     var stateInitials = $("#state").val();
     var zip = $("#zip").val();
-    //console.log(address);
     zillowGetter(address, city, stateInitials, zip);
     streetView(address, city, stateInitials, zip);
     weatherRunner(zip);
-    // document.getElementById("main-form").style.display = "none"; 
     $("#main-form").empty();
     $("#main-form-2").show();
   });
 
-  // returns the 4 character string for the current year.
-  // this return is used by backTracker() to have a year
-  // to work backwards from
+  // returns 4 character string for the current year.
+  // used by backTracker() to have start year
   function getYear() {
     var now = parseInt(moment().format('YYYY'));
     return now;
@@ -64,9 +43,6 @@ $(document).ready(function () {
   function weatherRunner(zip) {
     // we only get 250/month for free, so use sparingly when testing!!!
     // zipCaller(zip); // avoiding zipCaller for now to not max out API calls!!
-
-    // use below call to skip the zipCaller() until it is absolutely needed, then
-    // delete backTracker() call, and unComment out the zipCaller() call above
     backTracker("42101");
   }
 
@@ -85,168 +61,70 @@ $(document).ready(function () {
     })
   }
 
-  // RECURSIVE CALL SECTION : DO NOT DELETE
-  // this function gets the yearly temp avg data points for a county code
-  // it then crunches the numbers down into a single yearly avg which is
-  // pushed into the beginning of the TAVG array
-  // function noaaTAVG(FIPS, startYear, array, callCount, errorCount) {
-  //   console.log(errorCount);
-  //   if (callCount >= 25) {
-  //     console.log(array);
-  //     graphTempAVG(array);
-  //     return;
-  //   }
-  //   else if (errorCount >= 500) {
-  //     console.log(array);
-  //     graphTempAVG(array);
-  //     return;
-  //   }
-  //   var endYear = startYear + 1;
-  //   var tavgURL =
-  //     "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TAVG&locationid=FIPS:"
-  //     + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
-  //   $.ajax({
-  //     url: tavgURL,
-  //     headers: { token: NOAAtoken },
-  //     method: "GET",
-  //     success: function (response) {
-  //       ajaxDataMaker(response, array);
-  //       startYear = startYear - 2;
-  //       callCount++;
-  //       noaaTAVG(FIPS, startYear, array, callCount, errorCount);
-  //     },
-  //     error: function () {
-  //       errorCount++;
-  //       noaaTAVG(FIPS, startYear, array, callCount, errorCount);
-  //     }
-  //   })
-  // }
+  // backTracker takes the FIPS argument and triggers the NOAA ajax calls
+  function backTracker(FIPS) {
+    var startYear = getYear() - 12;
+    noaaTAVG(FIPS, startYear);
+    noaaEMXT(FIPS, startYear);
+    noaaPRCP(FIPS, startYear);
+  }
 
-  function noaaTAVG(FIPS, startYear, array) {
+  // NOAA ajax calls
+  function noaaTAVG(FIPS, startYear) {
     var endYear = startYear + 10;
     var tavgURL =
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=TAVG&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
     $.ajax({
       url: tavgURL,
-      headers: { token: NOAAtoken },
+      headers: { token: NOAAtokenAdrian },
       method: "GET",
       success: function (response) {
         var averages = objectMaker(response);
         graphTempMAX(averages);
       },
       error: function () {
-
       }
     })
   }
 
-  function noaaEMXT(FIPS, startYear, array) {
+  function noaaEMXT(FIPS, startYear) {
     var endYear = startYear + 10;
     var emxtURL =
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=EMXT&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
     $.ajax({
       url: emxtURL,
-      headers: { token: NOAAtoken },
+      headers: { token: NOAAtokenAdrian },
       method: "GET",
       success: function (response) {
         var averages = objectMaker(response);
         graphTempAVG(averages);
       },
       error: function () {
-
       }
     })
   }
 
-  function noaaPRCP(FIPS, startYear, array) {
+  function noaaPRCP(FIPS, startYear) {
     var endYear = startYear + 10;
     var prcpURL =
       "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=PRCP&locationid=FIPS:"
       + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
     $.ajax({
       url: prcpURL,
-      headers: { token: NOAAtoken },
+      headers: { token: NOAAtokenAdrian },
       method: "GET",
       success: function (response) {
         var averages = objectMaker(response);
         graphPRCP(averages);
       },
       error: function () {
-
       }
     })
   }
 
-  // this function gets the yearly temp maximum data points for a county code
-  // it then crunches the numbers down into a single yearly avg which is
-  // pushed into the beginning of the EMXT array
-  // on successful call, calls itself recursively, avoids 429 errors this way
-  // function noaaEMXT(FIPS, startYear, array, callCount, errorCount) {
-  //   if (callCount >= 25) {
-  //     graphTempMAX(array);
-  //     return;
-  //   }
-  //   else if (errorCount >= 500) {
-  //     graphTempMAX(array);
-  //     return;
-  //   }
-  //   var endYear = startYear + 1;
-  //   var emxtURL =
-  //     "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=EMXT&locationid=FIPS:"
-  //     + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
-  //   $.ajax({
-  //     url: emxtURL,
-  //     headers: { token: NOAAtoken },
-  //     method: "GET",
-  //     success: function (response) {
-  //       ajaxDataMaker(response, array);
-  //       startYear = startYear - 2;
-  //       callCount++;
-  //       noaaTMAX(FIPS, startYear, array, callCount, errorCount);
-  //     },
-  //     error: function () {
-  //       errorCount++;
-  //       noaaTMAX(FIPS, startYear, array, callCount, errorCount);
-  //     }
-  //   })
-  // }
-
-  // this function gets the yearly precipitation total data points for a county code
-  // it then crunches the numbers down into a single yearly avg which is
-  // pushed into the beginning of the PRCP array
-  // on successful call, calls itself recursively, avoids 429 errors this way
-  // function noaaPRCP(FIPS, startYear, array, callCount, errorCount) {
-  //   if (callCount >= 25) {
-  //     graphPRCP(array);
-  //     return;
-  //   }
-  //   else if (errorCount >= 500) {
-  //     graphPRCP(array);
-  //     return;
-  //   }
-  //   var endYear = startYear + 1;
-  //   var prcpURL =
-  //     "https://www.ncdc.noaa.gov/cdo-web/api/v2/data?datasetid=GSOY&datatypeid=PRCP&locationid=FIPS:"
-  //     + FIPS + "&startdate=" + startYear + "-01-01&enddate=" + endYear + "-01-01";
-  //   $.ajax({
-  //     url: prcpURL,
-  //     headers: { token: NOAAtoken },
-  //     method: "GET",
-  //     success: function (response) {
-  //       ajaxDataMaker(response, array);
-  //       startYear = startYear - 2;
-  //       callCount++;
-  //       noaaPRCP(FIPS, startYear, array, callCount, errorCount);
-  //     },
-  //     error: function () {
-  //       errorCount++;
-  //       noaaPRCP(FIPS, startYear, array, callCount, errorCount);
-  //     }
-  //   })
-  // }
-
+  // Used by the NOAA callers to extract and shape data for graphs
   function objectMaker(response) {
     var organizedDataSet = {};
     var array = response.results
@@ -274,45 +152,10 @@ $(document).ready(function () {
 
   // averages all the values in the array using reduce();
   function yearAvg(array) {
-    // need to understand following syntax better
     let sum = array.reduce((previous, current) => current += previous);
     let arrayAvg = sum / array.length;
     return arrayAvg;
   }
-
-  // this function is called by the noaa functions
-  // it gets all the data points for a year, then averages them
-  // then pushes them to the beginning of the respective array
-  // on successful call, calls itself recursively, avoids 429 errors this way
-  function ajaxDataMaker(response, array) {
-    var yearResults = [];
-    // forEach?
-    for (var i = 0; i < response.results.length; i++) {
-      yearResults.push((response.results[i].value));
-    }
-    var yearResultsAvg = yearAvg(yearResults);
-    arrayMaker(yearResultsAvg, array);
-  };
-
-  // backTracker takes the FIPS argument and works backwards through time,
-  // calling the ajax caller functions to add data for each year.
-  // really important function!
-  function backTracker(FIPS) {
-    var TAVG = [];
-    var EMXT = [];
-    var PRCP = [];
-    var startYear = getYear() - 12;
-
-    // recursive version calls
-    // noaaTAVG(FIPS, startYear, TAVG, 0, 0);
-    // noaaEMXT(FIPS, startYear, EMXT, 0, 0);
-    // noaaPRCP(FIPS, startYear, PRCP, 0, 0);
-
-    noaaTAVG(FIPS, startYear, TAVG);
-    noaaEMXT(FIPS, startYear, EMXT);
-    noaaPRCP(FIPS, startYear, PRCP);
-  }
-
 
   function graphTempAVG(array) {
     var year = moment().format('YYYY');
@@ -353,8 +196,6 @@ $(document).ready(function () {
     });
   };
 
-
-
   // zillow stuff
 
   // this function creates the url and does the ajax call to the Zillow API
@@ -369,20 +210,19 @@ $(document).ready(function () {
       + ZWSID + "&address=" + address + "&citystatezip=" + city + "%2C+" + stateInitials + "+" + zip;
 
     $.ajax({
-      // proxy because zillow doesn't accept CORS?
+      // proxy because zillow doesn't accept CORS
       url: proxy + zillowURL,
       method: "GET"
     }).then(function (response) {
       var JSONresponse = xmlToJson(response);
-      console.log(JSONresponse);
       zillowDisplayer(JSONresponse);
-      // return JSONresponse;
-
     });
   };
 
   // appends values taken from zillow JSONresponse and appends to bar at the top
   function zillowDisplayer(response) {
+    console.log(response);
+    console.log(response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]);
     var zestimate = undefinedChecker(
       response["SearchResults:searchresults"].response.results.result.zestimate.amount["#text"]);
     var lowRange = undefinedChecker(
@@ -394,7 +234,6 @@ $(document).ready(function () {
 
     $("#zestimate").append(zestimate);
     $("#range").append(lowRange + " - " + highRange);
-    // $("#highRange").append(highRange);
     $("#neighborhood").append(neighborhoodAVG);
   }
 
@@ -405,10 +244,8 @@ $(document).ready(function () {
     return string;
   }
 
-  // use this function to parse the string inputs from the form that the user fills out
-  // with their address
-  // URLs cannot take spaces, so this will replace every ' ' character within a string
-  // with a '+', which is URL friendly. Ajax calls will fail if this is not done!
+  // parses string inputs from user address form
+  // Replaces every ' ' character with '+', which is URL friendly
   function spaceToPlusParser(str) {
     var parsedString = str.replace(/ /g, '+');
     return parsedString;
@@ -436,12 +273,9 @@ $(document).ready(function () {
 
   // Changes XML to JSON
   function xmlToJson(xml) {
-
-    // Create the return object
     var obj = {};
 
     if (xml.nodeType == 1) { // element
-      // do attributes
       if (xml.attributes.length > 0) {
         obj["@attributes"] = {};
         for (var j = 0; j < xml.attributes.length; j++) {
@@ -472,5 +306,4 @@ $(document).ready(function () {
     }
     return obj;
   };
-
 });
