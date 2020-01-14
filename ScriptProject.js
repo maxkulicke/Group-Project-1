@@ -246,7 +246,7 @@ $(document).ready(function () {
     $("#range").append(lowRange + " - " + highRange);
     $("#neighborhood").append(neighborhoodAVG);
     $(".zillowLink").click(function () {
-      window.location = zillowLink;
+      window.open(zillowLink);
     });
   }
 
