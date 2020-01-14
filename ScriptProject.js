@@ -33,7 +33,7 @@ $(document).ready(function () {
     // document.getElementById("main-form").style.display = "none"; 
     $("#main-form").hide();
     $("#main-form-2").show();
-    $("body").css("background-image","none");
+    $("body").css("background-image", "none");
   });
 
   // returns 4 character string for the current year.
@@ -167,7 +167,7 @@ $(document).ready(function () {
 
     var year = moment().format('YYYY');
 
-    var formattedArray = array.map(function (temp, index) { return { x: year - (index*2), y: temp * 9 / 5 + 32 } });
+    var formattedArray = array.map(function (temp, index) { return { x: year - (index * 2), y: temp * 9 / 5 + 32 } });
 
     new Chartist.Line('.TAVG', {
       series: [formattedArray]
@@ -185,7 +185,7 @@ $(document).ready(function () {
     $("#main-form-2").show();
 
     var year = moment().format('YYYY');
-    var formattedArray = array.map(function (temp, index) { return { x: (year - index*2), y: temp * 9 / 5 + 32 } });
+    var formattedArray = array.map(function (temp, index) { return { x: (year - index * 2), y: temp * 9 / 5 + 32 } });
     new Chartist.Line('.TMAX', {
       series: [formattedArray]
     }, {
@@ -203,7 +203,7 @@ $(document).ready(function () {
 
     var year = moment().format('YYYY');
 
-    var formattedArray = array.map(function (total, index) { return { x: (year - index*2), y: total / 10 * 0.0393701 } });
+    var formattedArray = array.map(function (total, index) { return { x: (year - index * 2), y: total / 10 * 0.0393701 } });
 
     new Chartist.Line('.PRCP', {
       series: [formattedArray]
@@ -257,19 +257,19 @@ $(document).ready(function () {
       response["SearchResults:searchresults"].response.results.result.zestimate.valuationRange.high["#text"]);
     var neighborhoodAVG = undefinedChecker(
       response["SearchResults:searchresults"].response.results.result.localRealEstate.region.zindexValue["#text"]);
-      var zillowLink = undefinedChecker(
-        response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]);
-        console.log(zillowLink);
+    var zillowLink = undefinedChecker(
+      response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]);
+    console.log(zillowLink);
 
-        //response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]
+    //response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]
 
 
     $("#zestimate").append(zestimate);
     $("#range").append(lowRange + " - " + highRange);
     $("#neighborhood").append(neighborhoodAVG);
-    $(".zillowLink").click(function() {
-
+    $(".zillowLink").click(function () {
       window.location = zillowLink + this.id;
+    });
   }
 
 
