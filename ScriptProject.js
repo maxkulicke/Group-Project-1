@@ -318,7 +318,9 @@ $(document).ready(function () {
 
 
   function graphTempAVG(array) {
+
     $("#main-form-2").show();
+
     var year = moment().format('YYYY');
 
     var formattedArray = array.map(function (temp, index) { return { x: year - (index*2), y: temp * 9 / 5 + 32 } });
@@ -335,7 +337,9 @@ $(document).ready(function () {
   };
 
   function graphTempMAX(array) {
+
     $("#main-form-2").show();
+
     var year = moment().format('YYYY');
     var formattedArray = array.map(function (temp, index) { return { x: (year - index*2), y: temp * 9 / 5 + 32 } });
     new Chartist.Line('.TMAX', {
@@ -350,7 +354,9 @@ $(document).ready(function () {
   };
 
   function graphPRCP(array) {
+
     $("#main-form-2").show();
+
     var year = moment().format('YYYY');
 
     var formattedArray = array.map(function (total, index) { return { x: (year - index*2), y: total / 10 * 0.0393701 } });
@@ -413,16 +419,19 @@ $(document).ready(function () {
       var zillowLink = undefinedChecker(
         response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]);
         console.log(zillowLink);
+
         //response["SearchResults:searchresults"].response.results.result.localRealEstate.region.links.overview["#text"]
+
 
     $("#zestimate").append(zestimate);
     $("#range").append(lowRange + " - " + highRange);
     // $("#highRange").append(highRange);
     $("#neighborhood").append(neighborhoodAVG);
     $(".zillowLink").click(function() {
-      window.location = zillowLink + this.id
-    });
-  };
+
+      window.location = zillowLink + this.id;
+  }
+
 
   function undefinedChecker(string) {
     if (string == undefined) {
